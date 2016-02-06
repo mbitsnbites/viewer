@@ -1,0 +1,2 @@
+# Exclude out-of-tree build files.
+out*/**
