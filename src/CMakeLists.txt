@@ -32,6 +32,12 @@ if(UNIX AND NOT APPLE)
   endif()
 endif()
 
+if(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+  # Make sure that we find <GL/*.h> and friends on FreeBSD systems.
+  include_directories(/usr/local/include)
+  link_directories(/usr/local/lib)
+endif()
+
 # Add third party libraries.
 add_subdirectory(third_party)
 
