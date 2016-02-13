@@ -2,6 +2,24 @@
 
 This is a 3D model viewer.
 
+## Prerequisites
+
+To build and run the project, you need CMake and a proper build environment
+(e.g. GCC, Visual Studio, Xcode, ...).
+
+For Unix type systems (Linux, Mac OS X, FreeBSD, ...), run the script:
+
+```bash
+build/install-deps.sh
+```
+
+It should install the necessary tools and libraries (or tell you what you need
+to install).
+
+For Windows, you should be able to use [Visual Studio](https://www.visualstudio.com/)
+or  [mingw-w64](http://mingw-w64.org/) (or similar), together with
+[CMake](https://cmake.org/).
+
 ## Building
 
 Using CMake, you should make an out-of-tree build. Here are some examples:
