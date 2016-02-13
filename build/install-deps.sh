@@ -12,6 +12,12 @@ install_unknown() {
   echo " - Window system (e.g. X11) and OpenGL development libraries"
 }
 
+install_zypper() {
+  echo "[Linux / zypper]"
+  sudo zypper install -t pattern devel_C_C++
+  sudo zypper install cmake ninja libXrandr-devel libXinerama-devel libXcursor-devel
+}
+
 install_apt() {
   echo "[Linux / apt-get]"
   sudo apt-get install cmake ninja-build build-essential xorg-dev libgl1-mesa-dev
@@ -54,7 +60,11 @@ install_mac() {
 
 if [ "$(uname -s)" = "Linux" ]; then
   # Linux
-  if command -v apt-get >/dev/null 2>&1; then
+  # NOTE: The order is important. E.g. openSuse may have both apt-get and yum,
+  # but the recommended tool is zypper.
+  if command -v zypper >/dev/null 2>&1; then
+    install_zypper
+  elif command -v apt-get >/dev/null 2>&1; then
     install_apt
   elif command -v yum >/dev/null 2>&1; then
     install_yum
