@@ -18,9 +18,6 @@ if(APPLE)
   # Use libc++ on Mac OS X.
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
-
-  # Deployment target.
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "10.8")
 endif()
 
 if(UNIX AND NOT APPLE)
