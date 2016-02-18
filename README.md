@@ -17,10 +17,13 @@ It should install the necessary tools and libraries (or tell you what you need
 to install).
 
 For Windows, you should be able to use [Visual Studio](https://www.visualstudio.com/)
-or  [mingw-w64](http://mingw-w64.org/) (or similar), together with
+or [mingw-w64](http://mingw-w64.org/) (or similar), together with
 [CMake](https://cmake.org/).
 
 ## Building
+
+Current status for the master branch:
+[![Build status](https://travis-ci.org/mbitsnbites/viewer.svg?branch=master)](https://travis-ci.org/mbitsnbites/viewer)
 
 Using CMake, you should make an out-of-tree build. Here are some examples:
 
