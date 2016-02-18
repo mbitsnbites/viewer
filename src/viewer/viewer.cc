@@ -79,7 +79,7 @@ void Viewer::Run() {
 
   // Main loop.
   while (!glfwWindowShouldClose(window_)) {
-    glClearColor(1.0, 0.6, 0.0, 1.0);
+    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glfwSwapBuffers(window_);

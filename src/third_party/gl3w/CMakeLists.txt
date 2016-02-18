@@ -7,6 +7,8 @@ set(gl3w_sources
 
 add_library(gl3w ${gl3w_sources})
 target_include_directories(gl3w PUBLIC include)
-if (UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE)
   target_link_libraries(gl3w GL)
+elseif(WIN32)
+  target_link_libraries(gl3w opengl32)
 endif()

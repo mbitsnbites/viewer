@@ -31,6 +31,11 @@
 #ifndef __gl3w_h_
 #define __gl3w_h_
 
+/* Avoid including windows.h from glcorearb.h */
+#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
+#define APIENTRY __stdcall
+#endif
+
 #include "glcorearb.h"
 
 #ifndef __gl_h_
