@@ -1,0 +1,29 @@
+language: cpp
+compiler:
+    - clang
+    - gcc
+branches:
+    only:
+        - master
+os:
+    - linux
+    - osx
+sudo: required
+dist: trusty
+before_install:
+    - build/install-deps.sh
+env:
+    - CMAKE_BUILD_TYPE=Debug
+    - CMAKE_BUILD_TYPE=Release
+script:
+    - mkdir out
+    - cd out
+    - cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} ../src
+    - cmake --build .
+notifications:
+    email:
+        recipients:
+            - m@bitsnbites.eu
+    on_success: never
+    on_failure: always
+
