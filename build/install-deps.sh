@@ -14,24 +14,24 @@ install_unknown() {
 
 install_zypper() {
   echo "[Linux / zypper]"
-  sudo zypper install -t pattern devel_C_C++
-  sudo zypper install cmake ninja libXrandr-devel libXinerama-devel libXcursor-devel
+  sudo zypper -y install -t pattern devel_C_C++
+  sudo zypper -y install cmake ninja libXrandr-devel libXinerama-devel libXcursor-devel
 }
 
 install_apt() {
   echo "[Linux / apt-get]"
-  sudo apt-get install cmake ninja-build build-essential xorg-dev libgl1-mesa-dev
+  sudo apt-get -y install cmake ninja-build build-essential xorg-dev libgl1-mesa-dev
 }
 
 install_yum() {
   echo "[Linux / yum]"
-  sudo yum groupinstall "Development Tools"
-  sudo yum install cmake libX11-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGL-devel
+  sudo yum -y groupinstall "Development Tools"
+  sudo yum -y install cmake libX11-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGL-devel
 }
 
 install_freebsd_pkg() {
   echo "[FreeBSD / pkg]"
-  sudo pkg install cmake ninja glproto dri2proto libXi libXrandr
+  sudo pkg install -y cmake ninja glproto dri2proto libXi libXrandr
 }
 
 install_mac() {
