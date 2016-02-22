@@ -23,7 +23,8 @@ or [mingw-w64](http://mingw-w64.org/) (or similar), together with
 ## Building
 
 Current status for the master branch:
-[![Build status](https://travis-ci.org/mbitsnbites/viewer.svg?branch=master)](https://travis-ci.org/mbitsnbites/viewer)
+ * Linux & Mac OS X: [![Build status](https://travis-ci.org/mbitsnbites/viewer.svg?branch=master)](https://travis-ci.org/mbitsnbites/viewer)
+ * Windows: [![Build status](https://ci.appveyor.com/api/projects/status/5d4rmehk6b2t1fee/branch/master?svg=true)](https://ci.appveyor.com/project/mbitsnbites/viewer/branch/master)
 
 Using CMake, you should make an out-of-tree build. Here are some examples:
 

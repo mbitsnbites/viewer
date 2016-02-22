@@ -1,0 +1,24 @@
+branches:
+    only:
+        - master
+skip_tags: true
+environment:
+    matrix:
+        - BUILD_TYPE: Debug
+        - BUILD_TYPE: Release
+matrix:
+    fast_finish: true
+install:
+    - git submodule update --init --recursive
+build_script:
+    - mkdir out
+    - cd out
+    - cmake ../src
+    - cmake --build . --config %BUILD_TYPE%
+notifications:
+    - provider: Email
+      to:
+        - m@bitsnbites.eu
+    - on_build_failure: true
+    - on_build_success: false
+
