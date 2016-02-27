@@ -28,10 +28,6 @@
 
 #include <iostream>
 
-// HACK: This should make the Mac & Linux builds fail.
-// Even the Windows build should fail.
-#include <windows.h>
-
 #include "viewer/error.h"
 #include "viewer/viewer.h"
 
