@@ -38,8 +38,8 @@ namespace viewer {
 namespace {
 
 // Startup window properties.
-const int kWinWidth = 1280;
-const int kWinHeight = 720;
+const int kWinWidth = 1024;
+const int kWinHeight = 576;
 const char* kWinTitle = "Viewer";
 
 }  // namespace
