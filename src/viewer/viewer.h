@@ -29,6 +29,10 @@
 #ifndef VIEWER_VIEWER_H_
 #define VIEWER_VIEWER_H_
 
+#include <memory>
+
+#include "viewer/ui/ui.h"
+
 struct GLFWwindow;
 
 namespace viewer {
@@ -45,6 +49,7 @@ class Viewer {
   void CreateWindow();
 
   GLFWwindow* window_ = nullptr;
+  std::unique_ptr<Ui> ui_;
 };
 
 }  // namespace viewer

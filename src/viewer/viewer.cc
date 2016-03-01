@@ -77,10 +77,25 @@ void Viewer::Run() {
   // Create the main window.
   CreateWindow();
 
+  // Create the UI.
+  ui_.reset(new Ui(window_));
+
   // Main loop.
   while (!glfwWindowShouldClose(window_)) {
+    {
+      int display_w, display_h;
+      glfwGetFramebufferSize(window_, &display_w, &display_h);
+      glViewport(0, 0, display_w, display_h);
+    }
+
+    // Clear the screen.
     glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    // TODO(m): Paint the 3D world.
+
+    // Paint the UI.
+    ui_->Paint();
 
     glfwSwapBuffers(window_);
     glfwPollEvents();
