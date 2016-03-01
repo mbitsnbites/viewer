@@ -31,6 +31,8 @@
 
 #include "imgui/imgui.h"
 
+#include "viewer/graphics/shader.h"
+
 struct GLFWwindow;
 
 namespace viewer {
@@ -85,9 +87,7 @@ class Ui {
   bool mouse_pressed_[3] = {false, false, false};
   float mouse_wheel_ = 0.0f;
   unsigned int font_texture_ = 0;
-  unsigned int shader_handle_ = 0;
-  unsigned int vert_handle_ = 0;
-  unsigned int frag_handle_ = 0;
+  Shader shader_;
   int uniform_tex_ = 0;
   int uniform_proj_mtx_ = 0;
   int attrib_position_ = 0;

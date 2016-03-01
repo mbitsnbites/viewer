@@ -7,6 +7,10 @@ set(viewer_sources
     viewer.h)
 
 set(viewer_sources ${viewer_sources}
+    graphics/shader.cc
+    graphics/shader.h)
+
+set(viewer_sources ${viewer_sources}
     ui/ui.cc
     ui/ui.h)
 

@@ -28,9 +28,6 @@
 
 #include "viewer/ui/ui.h"
 
-#include <iostream>
-#include <vector>
-
 #include "GL/gl3w.h"
 #include "GLFW/glfw3.h"
 
@@ -149,7 +146,7 @@ void Ui::RenderDrawLists(ImDrawData* draw_data) {
       {0.0f, 0.0f, -1.0f, 0.0f},
       {-1.0f, 1.0f, 0.0f, 1.0f},
   };
-  glUseProgram(shader_handle_);
+  shader_.UseProgram();
   glUniform1i(uniform_tex_, 0);
   glUniformMatrix4fv(uniform_proj_mtx_, 1, GL_FALSE, &ortho_projection[0][0]);
   glBindVertexArray(vao_handle_);
@@ -356,50 +353,13 @@ bool Ui::CreateDeviceObjects() {
       "	Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
       "}\n";
 
-  shader_handle_ = glCreateProgram();
-  vert_handle_ = glCreateShader(GL_VERTEX_SHADER);
-  frag_handle_ = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(vert_handle_, 1, &vertex_shader, nullptr);
-  glShaderSource(frag_handle_, 1, &fragment_shader, nullptr);
-  glCompileShader(vert_handle_);
-  GLint result;
-  glGetShaderiv(vert_handle_, GL_COMPILE_STATUS, &result);
-  if (result != GL_TRUE) {
-    GLsizei len = 0;
-    std::vector<GLchar> str(1024);
-    glGetShaderInfoLog(vert_handle_, static_cast<GLsizei>(str.size()), &len,
-                       str.data());
-    // TODO(m): Raise exception instead!
-    std::cout << "Vertex shader: " << str.data() << "\n";
-  }
-  glCompileShader(frag_handle_);
-  glGetShaderiv(frag_handle_, GL_COMPILE_STATUS, &result);
-  if (result != GL_TRUE) {
-    GLsizei len = 0;
-    std::vector<GLchar> str(1024);
-    glGetShaderInfoLog(frag_handle_, static_cast<GLsizei>(str.size()), &len,
-                       str.data());
-    // TODO(m): Raise exception instead!
-    std::cout << "Fragment shader: " << str.data() << "\n";
-  }
-  glAttachShader(shader_handle_, vert_handle_);
-  glAttachShader(shader_handle_, frag_handle_);
-  glLinkProgram(shader_handle_);
-  glGetProgramiv(shader_handle_, GL_LINK_STATUS, &result);
-  if (result != GL_TRUE) {
-    GLsizei len = 0;
-    std::vector<GLchar> str(1024);
-    glGetProgramInfoLog(shader_handle_, static_cast<GLsizei>(str.size()), &len,
-                        str.data());
-    // TODO(m): Raise exception instead!
-    std::cout << "Shader program: " << str.data() << "\n";
-  }
+  shader_.Compile(vertex_shader, fragment_shader);
 
-  uniform_tex_ = glGetUniformLocation(shader_handle_, "Texture");
-  uniform_proj_mtx_ = glGetUniformLocation(shader_handle_, "ProjMtx");
-  attrib_position_ = glGetAttribLocation(shader_handle_, "Position");
-  attrib_uv_ = glGetAttribLocation(shader_handle_, "UV");
-  attrib_color_ = glGetAttribLocation(shader_handle_, "Color");
+  uniform_tex_ = shader_.GetUniformLocation("Texture");
+  uniform_proj_mtx_ = shader_.GetUniformLocation("ProjMtx");
+  attrib_position_ = shader_.GetAttribLocation("Position");
+  attrib_uv_ = shader_.GetAttribLocation("UV");
+  attrib_color_ = shader_.GetAttribLocation("Color");
 
   glGenBuffers(1, &vbo_handle_);
   glGenBuffers(1, &elements_handle_);
@@ -443,16 +403,7 @@ void Ui::InvalidateDeviceObjects() {
     glDeleteBuffers(1, &elements_handle_);
   vao_handle_ = vbo_handle_ = elements_handle_ = 0;
 
-  glDetachShader(shader_handle_, vert_handle_);
-  glDeleteShader(vert_handle_);
-  vert_handle_ = 0;
-
-  glDetachShader(shader_handle_, frag_handle_);
-  glDeleteShader(frag_handle_);
-  frag_handle_ = 0;
-
-  glDeleteProgram(shader_handle_);
-  shader_handle_ = 0;
+  shader_.Delete();
 
   if (font_texture_) {
     glDeleteTextures(1, &font_texture_);
