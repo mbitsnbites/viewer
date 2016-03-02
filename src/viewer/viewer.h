@@ -31,11 +31,10 @@
 
 #include <memory>
 
-#include "viewer/ui/ui.h"
-
-struct GLFWwindow;
-
 namespace viewer {
+
+class Ui;
+class Window;
 
 /// @brief The viewer application instance.
 class Viewer {
@@ -46,9 +45,7 @@ class Viewer {
   void Run();
 
  private:
-  void CreateWindow();
-
-  GLFWwindow* window_ = nullptr;
+  std::unique_ptr<Window> window_;
   std::unique_ptr<Ui> ui_;
 };
 

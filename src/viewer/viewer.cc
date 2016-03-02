@@ -32,6 +32,8 @@
 #include "GLFW/glfw3.h"
 
 #include "viewer/error.h"
+#include "viewer/ui/ui.h"
+#include "viewer/ui/window.h"
 
 namespace viewer {
 
@@ -51,42 +53,22 @@ Viewer::Viewer() {
 }
 
 Viewer::~Viewer() {
+  window_->Close();
   glfwTerminate();
-}
-
-void Viewer::CreateWindow() {
-  // Create a window.
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  window_ =
-      glfwCreateWindow(kWinWidth, kWinHeight, kWinTitle, nullptr, nullptr);
-  if (!window_) {
-    throw Error("Unable to open the GLFW window.");
-  }
-
-  // Initialize the OpenGL context.
-  glfwMakeContextCurrent(window_);
-  if (gl3wInit() || !gl3wIsSupported(3, 2)) {
-    throw Error("Unable to create an OpenGL 3.2 context.");
-  }
 }
 
 void Viewer::Run() {
   // Create the main window.
-  CreateWindow();
+  window_.reset(new Window(kWinWidth, kWinHeight, kWinTitle));
 
   // Create the UI.
-  ui_.reset(new Ui(window_));
+  ui_.reset(new Ui(window_->glfw_window()));
 
   // Main loop.
-  while (!glfwWindowShouldClose(window_)) {
-    {
-      int display_w, display_h;
-      glfwGetFramebufferSize(window_, &display_w, &display_h);
-      glViewport(0, 0, display_w, display_h);
-    }
+  while (!window_->ShouldClose()) {
+    glfwPollEvents();
+
+    window_->BeginFrame();
 
     // Clear the screen.
     glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
@@ -97,8 +79,7 @@ void Viewer::Run() {
     // Paint the UI.
     ui_->Paint();
 
-    glfwSwapBuffers(window_);
-    glfwPollEvents();
+    window_->SwapBuffers();
   }
 }
 

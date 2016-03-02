@@ -12,7 +12,9 @@ set(viewer_sources ${viewer_sources}
 
 set(viewer_sources ${viewer_sources}
     ui/ui.cc
-    ui/ui.h)
+    ui/ui.h
+    ui/window.cc
+    ui/window.h)
 
 add_executable(viewer ${viewer_sources})
 target_link_libraries(viewer gl3w glfw ${GLFW_LIBRARIES} imgui)
