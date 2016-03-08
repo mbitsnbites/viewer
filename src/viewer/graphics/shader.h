@@ -26,41 +26,31 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_VIEWER_H_
-#define VIEWER_VIEWER_H_
-
-#include <memory>
-
-#include "viewer/ui/window.h"
+#ifndef VIEWER_VIEWER_GRAPHICS_SHADER_H_
+#define VIEWER_VIEWER_GRAPHICS_SHADER_H_
 
 namespace viewer {
 
-/// @brief The viewer application instance.
-class Viewer {
+/// @brief An OpenGL shader program.
+class Shader {
  public:
-  /// @brief Run the application.
-  /// @note This method blocks until the application terminates.
-  void Run();
+  void Compile(const char* vert_src, const char* frag_src);
+  void Delete();
 
- private:
-  /// @brief A class for handling GLFW initialization and termination.
-  class GlfwContext {
-   public:
-    /// @brief Initialize GLFW.
-    GlfwContext();
+  int GetAttribLocation(const char* name);
+  int GetUniformLocation(const char* name);
+  void UseProgram();
 
-    /// @brief Terminate GLFW.
-    ~GlfwContext();
-  };
+  unsigned int handle() const { return handle_; }
+  bool linked() const { return linked_; }
 
-  // Note: The GLFW context is initialized before any GLFW windows are created,
-  // and destroyed after all GLFW windows have been destroyed (i.e. member order
-  // is important).
-  GlfwContext glfw_context_;
-
-  std::unique_ptr<UiWindow> main_window_;
+private:
+  unsigned int handle_ = 0;
+  unsigned int vert_handle_ = 0;
+  unsigned int frag_handle_ = 0;
+  bool linked_ = false;
 };
 
 }  // namespace viewer
 
-#endif  // VIEWER_ERROR_H_
+#endif  // VIEWER_VIEWER_GRAPHICS_SHADER_H_

@@ -30,6 +30,7 @@
 
 #include "GL/gl3w.h"
 #include "GLFW/glfw3.h"
+#include "imgui/imgui.h"
 
 #include "viewer/error.h"
 
@@ -37,54 +38,78 @@ namespace viewer {
 
 namespace {
 
-// Startup window properties.
-const int kWinWidth = 1280;
-const int kWinHeight = 720;
-const char* kWinTitle = "Viewer";
+/// @brief The application main window.
+class MainWindow : public UiWindow {
+ public:
+  MainWindow() : UiWindow(1024, 576, "Viewer") {}
+
+ private:
+  void DefineUi() override {
+    // 1. Show the main window.
+    if (show_main_window_) {
+      ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiSetCond_FirstUseEver);
+      ImGui::Begin("Main Window", &show_main_window_);
+      ImGui::Text("Hello, world!");
+      ImGui::SliderFloat("Some float", &float_value_, 0.0f, 1.0f);
+      ImGui::ColorEdit3("Some color",
+                        reinterpret_cast<float*>(&color_value_));
+      if (ImGui::Button("Another Window"))
+        show_another_window_ ^= 1;
+      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                  1000.0f / ImGui::GetIO().Framerate,
+                  ImGui::GetIO().Framerate);
+      ImGui::End();
+    }
+
+    // 2. Show another simple window.
+    if (show_another_window_) {
+      ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
+      ImGui::Begin("Another Window", &show_another_window_);
+      ImGui::Text("Hello");
+      ImGui::End();
+    }
+  }
+
+  ImVec4 color_value_ = ImColor(114, 144, 154);
+  float float_value_ = 0.5f;
+  bool show_main_window_ = true;
+  bool show_another_window_ = false;
+};
 
 }  // namespace
 
-Viewer::Viewer() {
+void Viewer::Run() {
+  // Create the main window.
+  main_window_.reset(new MainWindow());
+
+  // Main loop.
+  while (!main_window_->ShouldClose()) {
+    glfwPollEvents();
+
+    // Activate the main window for painting.
+    main_window_->BeginFrame();
+
+    // Clear the screen.
+    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // TODO(m): Paint the 3D world.
+
+    // Paint the UI.
+    main_window_->PaintUi();
+
+    main_window_->SwapBuffers();
+  }
+}
+
+Viewer::GlfwContext::GlfwContext() {
   if (!glfwInit()) {
     throw Error("Unable to initialize GLFW.");
   }
 }
 
-Viewer::~Viewer() {
+Viewer::GlfwContext::~GlfwContext() {
   glfwTerminate();
-}
-
-void Viewer::CreateWindow() {
-  // Create a window.
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  window_ =
-      glfwCreateWindow(kWinWidth, kWinHeight, kWinTitle, nullptr, nullptr);
-  if (!window_) {
-    throw Error("Unable to open the GLFW window.");
-  }
-
-  // Initialize the OpenGL context.
-  glfwMakeContextCurrent(window_);
-  if (gl3wInit() || !gl3wIsSupported(3, 2)) {
-    throw Error("Unable to create an OpenGL 3.2 context.");
-  }
-}
-
-void Viewer::Run() {
-  // Create the main window.
-  CreateWindow();
-
-  // Main loop.
-  while (!glfwWindowShouldClose(window_)) {
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glfwSwapBuffers(window_);
-    glfwPollEvents();
-  }
 }
 
 }  // namespace viewer
