@@ -11,8 +11,6 @@ set(viewer_sources ${viewer_sources}
     graphics/shader.h)
 
 set(viewer_sources ${viewer_sources}
-    ui/ui.cc
-    ui/ui.h
     ui/window.cc
     ui/window.h)
 

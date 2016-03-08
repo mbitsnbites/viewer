@@ -29,7 +29,13 @@
 #ifndef VIEWER_UI_WINDOW_H_
 #define VIEWER_UI_WINDOW_H_
 
+#include <memory>
+
+#include "viewer/graphics/shader.h"
+
 struct GLFWwindow;
+struct ImDrawData;
+struct ImFontAtlas;
 
 namespace viewer {
 
@@ -52,9 +58,6 @@ class Window {
   /// @returns true if the user has requested the window to be closed.
   bool ShouldClose();
 
-  /// @brief Close the window.
-  void Close();
-
   /// @brief Start a new frame for this window.
   ///
   /// This method sets up the OpenGL rendering context for rendering to it. It
@@ -65,16 +68,27 @@ class Window {
   /// @brief End a frame, and swap front & back OpenGL buffers.
   void SwapBuffers();
 
-  /// @brief Get the Window object for the given GLFWwindow handle.
-  /// @param glfw_window The GLFW window.
-  /// @returns The corresponding Window object pointer.
-  static Window& GetWindow(GLFWwindow* glfw_window);
-
-  GLFWwindow* glfw_window() { return glfw_window_; }
   int framebuffer_width() const { return framebuffer_width_; }
   int framebuffer_height() const { return framebuffer_height_; }
 
  protected:
+  // Virtual GLFW callback handlers. Override these to catch window events.
+  virtual void OnWindowPos(int x, int y);
+  virtual void OnWindowSize(int width, int height);
+  virtual void OnWindowClose();
+  virtual void OnWindowRefresh();
+  virtual void OnWindowFocus(bool focused);
+  virtual void OnWindowIconify(bool iconified);
+  virtual void OnFramebufferSize(int width, int height);
+  virtual void OnMouseButton(int button, int action, int mods);
+  virtual void OnCursorPos(double x, double y);
+  virtual void OnCursorEnter(bool entered);
+  virtual void OnScroll(double x_offset, double y_offset);
+  virtual void OnKey(int key, int scan_code, int action, int mods);
+  virtual void OnChar(unsigned int code_point);
+  virtual void OnCharMods(unsigned int code_point, int mods);
+  virtual void OnDrop(int count, const char** paths);
+
   GLFWwindow* glfw_window_ = nullptr;
   int framebuffer_width_ = 0;
   int framebuffer_height_ = 0;
@@ -115,27 +129,74 @@ class Window {
                            int count,
                            const char** paths);
 
-  // Virtual GLFW callback handlers. Override these to catch window events.
-  virtual void OnWindowPos(int x, int y);
-  virtual void OnWindowSize(int width, int height);
-  virtual void OnWindowClose();
-  virtual void OnWindowRefresh();
-  virtual void OnWindowFocus(bool focused);
-  virtual void OnWindowIconify(bool iconified);
-  virtual void OnFramebufferSize(int width, int height);
-  virtual void OnMouseButton(int button, int action, int mods);
-  virtual void OnCursorPos(double x, double y);
-  virtual void OnCursorEnter(bool entered);
-  virtual void OnScroll(double x_offset, double y_offset);
-  virtual void OnKey(int key, int scan_code, int action, int mods);
-  virtual void OnChar(unsigned int code_point);
-  virtual void OnCharMods(unsigned int code_point, int mods);
-  virtual void OnDrop(int count, const char** paths);
-
   // Disable copy/move.
   Window(const Window&) = delete;
   Window(Window&&) = delete;
   Window& operator=(const Window&) = delete;
+};
+
+class UiWindow : public Window {
+ public:
+  /// @brief Construct a new GLFW window with UI support.
+  /// @param width The inner width of the window.
+  /// @param height The inner height of the window.
+  /// @param title The title/caption of the window.
+  /// @note GLFW must have been initialized before calling the constructor.
+  UiWindow(int width, int height, const char* title);
+
+  /// @brief Destructor.
+  virtual ~UiWindow();
+
+  /// @brief Paint the UI.
+  void PaintUi();
+
+ private:
+  void CreateDeviceObjects();
+  void CreateFontsTexture();
+
+  void BeginUi();
+  void EndUi();
+
+  /// @brief Define the UI using ImGui calls.
+  /// @note Override this method to render something meaningful.
+  virtual void DefineUi();
+
+  static void RenderDrawListsDispatch(ImDrawData* draw_data);
+  void RenderDrawLists(ImDrawData* draw_data);
+
+  static const char* GetClipboardText();
+  static void SetClipboardText(const char* text);
+
+  static void MouseButtonHandler(GLFWwindow* glfw_window,
+                                 int button,
+                                 int action,
+                                 int mods);
+  static void ScrollHandler(GLFWwindow* glfw_window,
+                            double x_offset,
+                            double y_offset);
+  static void KeyHandler(GLFWwindow* glfw_window,
+                         int key,
+                         int scan_code,
+                         int action,
+                         int mods);
+  static void CharHandler(GLFWwindow* glfw_window, unsigned int code_point);
+
+  void* imgui_context_ = nullptr;
+  std::unique_ptr<ImFontAtlas> font_atlas_;
+
+  double time_ = 0.0;
+  bool mouse_pressed_[3] = {false, false, false};
+  float mouse_wheel_ = 0.0f;
+  unsigned int font_texture_ = 0;
+  Shader shader_;
+  int uniform_tex_ = 0;
+  int uniform_proj_mtx_ = 0;
+  int attrib_position_ = 0;
+  int attrib_uv_ = 0;
+  int attrib_color_ = 0;
+  unsigned int vbo_handle_ = 0;
+  unsigned int vao_handle_ = 0;
+  unsigned int elements_handle_ = 0;
 };
 
 }  // namespace viewer
