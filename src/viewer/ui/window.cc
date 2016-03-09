@@ -100,6 +100,9 @@ Window::Window(int width, int height, const char* title) {
   if (gl3wInit() || !gl3wIsSupported(3, 2)) {
     throw Error("Unable to create an OpenGL 3.2 context.");
   }
+
+  // Enable vertical sync.
+  glfwSwapInterval(1);
 }
 
 Window::~Window() {
