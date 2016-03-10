@@ -21,12 +21,19 @@ ALL_SOURCE_FILES="${CPP_SOURCE_FILES} ${H_SOURCE_FILES}"
 echo "Running cpplint..."
 tools/cpplint.py --root=src ${ALL_SOURCE_FILES}
 
-# Run clang-tidy static analysis, if we have it.
+# Check if we have any supported Clang static analysis tools.
+FOUND_CLANG_TOOLS=no
 if command -v clang-tidy >/dev/null 2>&1; then
-  echo ""
-  echo "Running clang-tidy..."
+  FOUND_CLANG_TOOLS=yes
+elif command -v clang-check >/dev/null 2>&1; then
+  FOUND_CLANG_TOOLS=yes
+fi
 
+# Run Clang static analysis, if we have it.
+if [ "${FOUND_CLANG_TOOLS}" = "yes" ]; then
   # Generate a compile command database for our project.
+  echo ""
+  echo "Building compile command database..."
   TMP_BUILD=/tmp/build-$$
   mkdir ${TMP_BUILD}
   cd ${TMP_BUILD}
@@ -34,7 +41,18 @@ if command -v clang-tidy >/dev/null 2>&1; then
   cd ${PROJECT_DIR}
 
   # Run clang-tidy on all our CPP files.
-  clang-tidy -p ${TMP_BUILD} ${CPP_SOURCE_FILES}
+  if command -v clang-tidy >/dev/null 2>&1; then
+    echo ""
+    echo "Running clang-tidy..."
+    clang-tidy -p ${TMP_BUILD} ${CPP_SOURCE_FILES}
+  fi
+
+  # Run clang-check on all our CPP files.
+  if command -v clang-check >/dev/null 2>&1; then
+    echo ""
+    echo "Running clang-check..."
+    clang-check -analyze -p ${TMP_BUILD} ${CPP_SOURCE_FILES}
+  fi
 
   # Delete the temporary directory.
   rm -rf ${TMP_BUILD}
