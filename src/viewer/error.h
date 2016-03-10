@@ -30,14 +30,15 @@
 #define VIEWER_ERROR_H_
 
 #include <stdexcept>
+#include <string>
 
 namespace viewer {
 
 /// @brief General error.
 class Error : public std::runtime_error {
  public:
-  Error(const std::string& what_arg) : std::runtime_error(what_arg) {}
-  Error(const char* what_arg) : std::runtime_error(what_arg) {}
+  explicit Error(const std::string& what_arg) : std::runtime_error(what_arg) {}
+  explicit Error(const char* what_arg) : std::runtime_error(what_arg) {}
 };
 
 }  // namespace viewer
