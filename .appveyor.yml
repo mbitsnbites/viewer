@@ -2,19 +2,20 @@ branches:
     only:
         - master
 skip_tags: true
-environment:
-    matrix:
-        - BUILD_TYPE: Debug
-        - BUILD_TYPE: Release
 matrix:
     fast_finish: true
 install:
     - git submodule update --init --recursive
 build_script:
-    - mkdir out
-    - cd out
+    - mkdir out_debug
+    - cd out_debug
     - cmake ../src
-    - cmake --build . --config %BUILD_TYPE%
+    - cmake --build . --config Debug
+    - cd ..
+    - mkdir out_release
+    - cd out_release
+    - cmake ../src
+    - cmake --build . --config Release
 notifications:
     - provider: Email
       to:
