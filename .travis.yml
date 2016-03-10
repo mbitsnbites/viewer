@@ -11,7 +11,7 @@ os:
 sudo: required
 dist: trusty
 before_install:
-    - build/install-deps.sh
+    - tools/install-deps.sh
 env:
     - CMAKE_BUILD_TYPE=Debug
     - CMAKE_BUILD_TYPE=Release
