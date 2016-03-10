@@ -14,8 +14,8 @@ install_unknown() {
 
 install_zypper() {
   echo "[Linux / zypper]"
-  sudo zypper -y install -t pattern devel_C_C++
-  sudo zypper -y install cmake ninja libXrandr-devel libXinerama-devel libXcursor-devel
+  sudo zypper -n install -t pattern devel_C_C++
+  sudo zypper -n install cmake ninja libXrandr-devel libXinerama-devel libXcursor-devel
 }
 
 install_apt() {
