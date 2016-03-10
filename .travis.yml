@@ -13,6 +13,7 @@ dist: trusty
 before_install:
     - tools/install-deps.sh
 script:
+    - tools/static-analysis.sh
     - mkdir out_debug
     - cd out_debug
     - cmake -GNinja -DCMAKE_BUILD_TYPE=Debug ../src
