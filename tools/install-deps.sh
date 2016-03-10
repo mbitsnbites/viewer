@@ -15,12 +15,12 @@ install_unknown() {
 install_zypper() {
   echo "[Linux / zypper]"
   sudo zypper -n install -t pattern devel_C_C++
-  sudo zypper -n install cmake ninja libXrandr-devel libXinerama-devel libXcursor-devel
+  sudo zypper -n install cmake ninja llvm-clang libXrandr-devel libXinerama-devel libXcursor-devel
 }
 
 install_apt() {
   echo "[Linux / apt-get]"
-  sudo apt-get -y install cmake ninja-build build-essential xorg-dev libgl1-mesa-dev
+  sudo apt-get -y install cmake ninja-build build-essential clang xorg-dev libgl1-mesa-dev
 }
 
 install_yum() {
