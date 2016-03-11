@@ -56,4 +56,6 @@ if [ "${FOUND_CLANG_TOOLS}" = "yes" ]; then
 
   # Delete the temporary directory.
   rm -rf ${TMP_BUILD}
+
+  # TODO(m): Exit with an error code if any of the tests failed.
 fi
