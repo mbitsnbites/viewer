@@ -10,7 +10,7 @@ To build and run the project, you need CMake and a proper build environment
 For Unix type systems (Linux, Mac OS X, FreeBSD, ...), run the script:
 
 ```bash
-build/install-deps.sh
+tools/install-deps.sh
 ```
 
 It should install the necessary tools and libraries (or tell you what you need

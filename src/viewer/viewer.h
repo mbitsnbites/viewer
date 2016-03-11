@@ -63,4 +63,4 @@ class Viewer {
 
 }  // namespace viewer
 
-#endif  // VIEWER_ERROR_H_
+#endif  // VIEWER_VIEWER_H_

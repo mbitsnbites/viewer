@@ -11,14 +11,17 @@ os:
 sudo: required
 dist: trusty
 before_install:
-    - build/install-deps.sh
-env:
-    - CMAKE_BUILD_TYPE=Debug
-    - CMAKE_BUILD_TYPE=Release
+    - tools/install-deps.sh
 script:
-    - mkdir out
-    - cd out
-    - cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} ../src
+    - tools/static-analysis.sh
+    - mkdir out_debug
+    - cd out_debug
+    - cmake -GNinja -DCMAKE_BUILD_TYPE=Debug ../src
+    - cmake --build .
+    - cd ..
+    - mkdir out_release
+    - cd out_release
+    - cmake -GNinja -DCMAKE_BUILD_TYPE=Release ../src
     - cmake --build .
 notifications:
     email:

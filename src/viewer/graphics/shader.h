@@ -26,8 +26,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_VIEWER_GRAPHICS_SHADER_H_
-#define VIEWER_VIEWER_GRAPHICS_SHADER_H_
+#ifndef VIEWER_GRAPHICS_SHADER_H_
+#define VIEWER_GRAPHICS_SHADER_H_
 
 namespace viewer {
 
@@ -44,7 +44,7 @@ class Shader {
   unsigned int handle() const { return handle_; }
   bool linked() const { return linked_; }
 
-private:
+ private:
   unsigned int handle_ = 0;
   unsigned int vert_handle_ = 0;
   unsigned int frag_handle_ = 0;
@@ -53,4 +53,4 @@ private:
 
 }  // namespace viewer
 
-#endif  // VIEWER_VIEWER_GRAPHICS_SHADER_H_
+#endif  // VIEWER_GRAPHICS_SHADER_H_

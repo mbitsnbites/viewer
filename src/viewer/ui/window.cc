@@ -471,9 +471,9 @@ void UiWindow::CreateDeviceObjects() {
       "out vec4 Frag_Color;\n"
       "void main()\n"
       "{\n"
-      "	Frag_UV = UV;\n"
-      "	Frag_Color = Color;\n"
-      "	gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
+      "  Frag_UV = UV;\n"
+      "  Frag_Color = Color;\n"
+      "  gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
       "}\n";
 
   const GLchar* fragment_shader =
@@ -484,7 +484,7 @@ void UiWindow::CreateDeviceObjects() {
       "out vec4 Out_Color;\n"
       "void main()\n"
       "{\n"
-      "	Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
+      "  Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
       "}\n";
 
   shader_.Compile(vertex_shader, fragment_shader);
@@ -758,7 +758,7 @@ void UiWindow::CharHandler(GLFWwindow* glfw_window, unsigned int code_point) {
   ImGui::SetInternalState(window.imgui_context_);
   ImGuiIO& io = ImGui::GetIO();
   if (code_point > 0 && code_point < 0x10000) {
-    io.AddInputCharacter(static_cast<unsigned short>(code_point));
+    io.AddInputCharacter(static_cast<ImWchar>(code_point));
   }
 
   window.OnChar(code_point);
