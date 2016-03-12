@@ -50,7 +50,7 @@ UiWindow* g_painting_ui_window = nullptr;
 Window& GetWindow(GLFWwindow* glfw_window) {
   auto* window =
       reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
-  if (!window) {
+  if (window == nullptr) {
     throw Error("No matching Window found for the given GLFW window handle.");
   }
   return *window;
@@ -69,7 +69,7 @@ Window::Window(int width, int height, const char* title) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfw_window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
-  if (!glfw_window_) {
+  if (glfw_window_ == nullptr) {
     throw Error("Unable to open the GLFW window.");
   }
 
@@ -97,7 +97,7 @@ Window::Window(int width, int height, const char* title) {
 
   // Initialize the OpenGL context.
   glfwMakeContextCurrent(glfw_window_);
-  if (gl3wInit() || !gl3wIsSupported(3, 2)) {
+  if (gl3wInit() != 0 || gl3wIsSupported(3, 2) == 0) {
     throw Error("Unable to create an OpenGL 3.2 context.");
   }
 
@@ -106,7 +106,7 @@ Window::Window(int width, int height, const char* title) {
 }
 
 Window::~Window() {
-  if (glfw_window_) {
+  if (glfw_window_ != nullptr) {
     glfwDestroyWindow(glfw_window_);
   }
 }
@@ -296,7 +296,7 @@ UiWindow::UiWindow(int width, int height, const char* title)
 
   // Create a new ImGui context.
   imgui_context_ = std::malloc(ImGui::GetInternalStateSize());
-  if (!imgui_context_) {
+  if (imgui_context_ == nullptr) {
     throw Error("Could not create ImGui context.");
   }
   ImGui::SetInternalState(imgui_context_, true);
@@ -381,7 +381,7 @@ void UiWindow::PaintUi() {
 
 void UiWindow::BeginUi() {
   // Activate this window for UI rendering.
-  if (g_painting_ui_window) {
+  if (g_painting_ui_window != nullptr) {
     throw Error("There is already an active UI window for this thread.");
   }
   g_painting_ui_window = this;
@@ -407,7 +407,7 @@ void UiWindow::BeginUi() {
   // Setup inputs.
   // (we already got mouse wheel, keyboard keys & characters from GLFW callbacks
   // polled in glfwPollEvents())
-  if (glfwGetWindowAttrib(glfw_window_, GLFW_FOCUSED)) {
+  if (glfwGetWindowAttrib(glfw_window_, GLFW_FOCUSED) == GL_TRUE) {
     double mouse_x, mouse_y;
     glfwGetCursorPos(glfw_window_, &mouse_x, &mouse_y);
     // Mouse position in screen coordinates (set to -1,-1 if no mouse / on
@@ -439,7 +439,7 @@ void UiWindow::BeginUi() {
 }
 
 void UiWindow::EndUi() {
-  if (!g_painting_ui_window) {
+  if (g_painting_ui_window == nullptr) {
     throw Error("No active UI window.");
   }
   ImGui::Render();
@@ -551,7 +551,7 @@ void UiWindow::CreateFontsTexture() {
 }
 
 void UiWindow::RenderDrawListsDispatch(ImDrawData* draw_data) {
-  if (!g_painting_ui_window) {
+  if (g_painting_ui_window == nullptr) {
     throw Error("No active UI window.");
   }
   g_painting_ui_window->RenderDrawLists(draw_data);
@@ -637,7 +637,7 @@ void UiWindow::RenderDrawLists(ImDrawData* draw_data) {
 
     for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin();
          pcmd != cmd_list->CmdBuffer.end(); pcmd++) {
-      if (pcmd->UserCallback) {
+      if (pcmd->UserCallback != nullptr) {
         pcmd->UserCallback(cmd_list, pcmd);
       } else {
         glBindTexture(
@@ -667,22 +667,22 @@ void UiWindow::RenderDrawLists(ImDrawData* draw_data) {
                           static_cast<GLuint>(last_blend_equation_alpha));
   glBlendFunc(static_cast<GLuint>(last_blend_src),
               static_cast<GLuint>(last_blend_dst));
-  if (last_enable_blend) {
+  if (last_enable_blend == GL_TRUE) {
     glEnable(GL_BLEND);
   } else {
     glDisable(GL_BLEND);
   }
-  if (last_enable_cull_face) {
+  if (last_enable_cull_face == GL_TRUE) {
     glEnable(GL_CULL_FACE);
   } else {
     glDisable(GL_CULL_FACE);
   }
-  if (last_enable_depth_test) {
+  if (last_enable_depth_test == GL_TRUE) {
     glEnable(GL_DEPTH_TEST);
   } else {
     glDisable(GL_DEPTH_TEST);
   }
-  if (last_enable_scissor_test) {
+  if (last_enable_scissor_test == GL_TRUE) {
     glEnable(GL_SCISSOR_TEST);
   } else {
     glDisable(GL_SCISSOR_TEST);
@@ -693,14 +693,14 @@ void UiWindow::RenderDrawLists(ImDrawData* draw_data) {
 }
 
 const char* UiWindow::GetClipboardText() {
-  if (!g_painting_ui_window) {
+  if (g_painting_ui_window == nullptr) {
     throw Error("No active UI window.");
   }
   return glfwGetClipboardString(g_painting_ui_window->glfw_window_);
 }
 
 void UiWindow::SetClipboardText(const char* text) {
-  if (!g_painting_ui_window) {
+  if (g_painting_ui_window == nullptr) {
     throw Error("No active UI window.");
   }
   glfwSetClipboardString(g_painting_ui_window->glfw_window_, text);

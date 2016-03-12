@@ -53,8 +53,9 @@ class MainWindow : public UiWindow {
       ImGui::SliderFloat("Some float", &float_value_, 0.0f, 1.0f);
       ImGui::ColorEdit3("Some color",
                         reinterpret_cast<float*>(&color_value_));
-      if (ImGui::Button("Another Window"))
+      if (ImGui::Button("Another Window")) {
         show_another_window_ ^= 1;
+      }
       ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
                   1000.0f / ImGui::GetIO().Framerate,
                   ImGui::GetIO().Framerate);
@@ -103,7 +104,7 @@ void Viewer::Run() {
 }
 
 Viewer::GlfwContext::GlfwContext() {
-  if (!glfwInit()) {
+  if (glfwInit() == GL_FALSE) {
     throw Error("Unable to initialize GLFW.");
   }
 }
