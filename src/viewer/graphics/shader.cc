@@ -97,14 +97,14 @@ void Shader::Compile(const char* vert_src, const char* frag_src) {
 }
 
 void Shader::Delete() {
-  if (handle_) {
-    if (vert_handle_) {
+  if (handle_ != 0) {
+    if (vert_handle_ != 0) {
       glDetachShader(handle_, vert_handle_);
       glDeleteShader(vert_handle_);
       vert_handle_ = 0;
     }
 
-    if (frag_handle_) {
+    if (frag_handle_ != 0) {
       glDetachShader(handle_, frag_handle_);
       glDeleteShader(frag_handle_);
       frag_handle_ = 0;
