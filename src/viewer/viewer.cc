@@ -33,6 +33,7 @@
 #include "imgui/imgui.h"
 
 #include "viewer/error.h"
+#include "viewer/utils/make_unique.h"
 
 namespace viewer {
 
@@ -81,7 +82,7 @@ class MainWindow : public UiWindow {
 
 void Viewer::Run() {
   // Create the main window.
-  main_window_.reset(new MainWindow());
+  main_window_ = make_unique<MainWindow>();
 
   // Main loop.
   while (!main_window_->ShouldClose()) {

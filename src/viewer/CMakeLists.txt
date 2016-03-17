@@ -14,5 +14,8 @@ set(viewer_sources ${viewer_sources}
     ui/window.cc
     ui/window.h)
 
+set(viewer_sources ${viewer_sources}
+    utils/make_unique.h)
+
 add_executable(viewer ${viewer_sources})
 target_link_libraries(viewer gl3w glfw ${GLFW_LIBRARIES} imgui)

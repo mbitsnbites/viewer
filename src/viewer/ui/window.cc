@@ -40,6 +40,7 @@
 #endif  // _WIN32
 
 #include "viewer/error.h"
+#include "viewer/utils/make_unique.h"
 
 namespace viewer {
 
@@ -308,7 +309,7 @@ UiWindow::UiWindow(int width, int height, const char* title)
   io.LogFilename = nullptr;
 
   // Create a new font atlas for this context.
-  font_atlas_.reset(new ImFontAtlas);
+  font_atlas_ = make_unique<ImFontAtlas>();
   io.Fonts = font_atlas_.get();
 
   // Keyboard mapping. ImGui will use those indices to peek into the
