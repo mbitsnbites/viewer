@@ -26,50 +26,36 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
-
-#include "GL/gl3w.h"
-#include "GLFW/glfw3.h"
-#include "imgui/imgui.h"
-
-#include "viewer/error.h"
 #include "viewer/main_window.h"
-#include "viewer/utils/make_unique.h"
 
 namespace viewer {
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = make_unique<MainWindow>();
-
-  // Main loop.
-  while (!main_window_->ShouldClose()) {
-    glfwPollEvents();
-
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
-
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // TODO(m): Paint the 3D world.
-
-    // Paint the UI.
-    main_window_->PaintUi();
-
-    main_window_->SwapBuffers();
-  }
+MainWindow::MainWindow() : UiWindow(1024, 576, "Viewer") {
 }
 
-Viewer::GlfwContext::GlfwContext() {
-  if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
+void MainWindow::DefineUi() {
+  // 1. Show the main window.
+  if (show_main_window_) {
+    ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiSetCond_FirstUseEver);
+    ImGui::Begin("Main Window", &show_main_window_);
+    ImGui::Text("Hello, world!");
+    ImGui::SliderFloat("Some float", &float_value_, 0.0f, 1.0f);
+    ImGui::ColorEdit3("Some color", reinterpret_cast<float*>(&color_value_));
+    if (ImGui::Button("Another Window")) {
+      show_another_window_ ^= 1;
+    }
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
   }
-}
 
-Viewer::GlfwContext::~GlfwContext() {
-  glfwTerminate();
+  // 2. Show another simple window.
+  if (show_another_window_) {
+    ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
+    ImGui::Begin("Another Window", &show_another_window_);
+    ImGui::Text("Hello");
+    ImGui::End();
+  }
 }
 
 }  // namespace viewer

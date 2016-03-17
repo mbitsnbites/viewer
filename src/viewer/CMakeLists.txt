@@ -3,6 +3,8 @@
 set(viewer_sources
     error.h
     main.cc
+    main_window.cc
+    main_window.h
     viewer.cc
     viewer.h)
 
