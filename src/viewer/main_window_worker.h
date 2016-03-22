@@ -26,50 +26,50 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
+#ifndef VIEWER_MAIN_WINDOW_WORKER_H_
+#define VIEWER_MAIN_WINDOW_WORKER_H_
 
-#include "GL/gl3w.h"
-#include "GLFW/glfw3.h"
-#include "imgui/imgui.h"
-
-#include "viewer/error.h"
-#include "viewer/main_window.h"
-#include "viewer/utils/make_unique.h"
+#include <atomic>
+#include <condition_variable>
+#include <memory>
+#include <mutex>
+#include <thread>
 
 namespace viewer {
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = make_unique<MainWindow>();
+class OffscreenContext;
+class Window;
 
-  // Main loop.
-  while (!main_window_->ShouldClose()) {
-    glfwPollEvents();
+/// @brief The main worker.
+class MainWindowWorker {
+ public:
+  /// @brief Constructor.
+  /// @param share_window The window that the worker context will share OpenGL
+  /// objects with.
+  explicit MainWindowWorker(const Window& share_window);
 
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
+  /// @brief Destructor.
+  ///
+  /// The destructor terminates the worker thread and blocks until the thread
+  /// has terminated gracefully.
+  ~MainWindowWorker();
 
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+ private:
+  void Run();
 
-    // TODO(m): Paint the 3D world.
+  std::atomic_bool terminate_thread_;
+  std::condition_variable condition_variable_;
+  std::mutex mutex_;
+  std::thread thread_;
 
-    // Paint the UI.
-    main_window_->PaintUi();
+  std::unique_ptr<OffscreenContext> gl_context_;
 
-    main_window_->SwapBuffers();
-  }
-}
-
-Viewer::GlfwContext::GlfwContext() {
-  if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
-  }
-}
-
-Viewer::GlfwContext::~GlfwContext() {
-  glfwTerminate();
-}
+  // Disable copy/move.
+  MainWindowWorker(const MainWindowWorker&) = delete;
+  MainWindowWorker(MainWindowWorker&&) = delete;
+  MainWindowWorker& operator=(const MainWindowWorker&) = delete;
+};
 
 }  // namespace viewer
+
+#endif  // VIEWER_MAIN_WINDOW_WORKER_H_

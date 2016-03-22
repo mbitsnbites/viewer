@@ -26,50 +26,34 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
+#ifndef VIEWER_MAIN_WINDOW_H_
+#define VIEWER_MAIN_WINDOW_H_
 
-#include "GL/gl3w.h"
-#include "GLFW/glfw3.h"
+#include <memory>
+
 #include "imgui/imgui.h"
 
-#include "viewer/error.h"
-#include "viewer/main_window.h"
-#include "viewer/utils/make_unique.h"
+#include "viewer/main_window_worker.h"
+#include "viewer/ui/ui_window.h"
 
 namespace viewer {
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = make_unique<MainWindow>();
+/// @brief The application main window.
+class MainWindow : public UiWindow {
+ public:
+  MainWindow();
 
-  // Main loop.
-  while (!main_window_->ShouldClose()) {
-    glfwPollEvents();
+ private:
+  void DefineUi() override;
 
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
+  std::unique_ptr<MainWindowWorker> worker_;
 
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // TODO(m): Paint the 3D world.
-
-    // Paint the UI.
-    main_window_->PaintUi();
-
-    main_window_->SwapBuffers();
-  }
-}
-
-Viewer::GlfwContext::GlfwContext() {
-  if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
-  }
-}
-
-Viewer::GlfwContext::~GlfwContext() {
-  glfwTerminate();
-}
+  ImVec4 color_value_ = ImColor(114, 144, 154);
+  float float_value_ = 0.5f;
+  bool show_main_window_ = true;
+  bool show_another_window_ = false;
+};
 
 }  // namespace viewer
+
+#endif  // VIEWER_MAIN_WINDOW_H_

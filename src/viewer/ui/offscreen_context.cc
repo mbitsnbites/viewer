@@ -26,50 +26,50 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
+#include "viewer/ui/offscreen_context.h"
 
 #include "GL/gl3w.h"
 #include "GLFW/glfw3.h"
-#include "imgui/imgui.h"
 
 #include "viewer/error.h"
-#include "viewer/main_window.h"
-#include "viewer/utils/make_unique.h"
+#include "viewer/ui/window.h"
 
 namespace viewer {
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = make_unique<MainWindow>();
+OffscreenContext::OffscreenContext(const Window& share_window) {
+  // Create a window.
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+  glfw_window_ =
+      glfwCreateWindow(1, 1, "", nullptr, share_window.glfw_window());
+  if (glfw_window_ == nullptr) {
+    throw Error("Unable to create the offscreen OpenGL context.");
+  }
 
-  // Main loop.
-  while (!main_window_->ShouldClose()) {
-    glfwPollEvents();
-
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
-
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // TODO(m): Paint the 3D world.
-
-    // Paint the UI.
-    main_window_->PaintUi();
-
-    main_window_->SwapBuffers();
+  // Initialize the OpenGL context.
+  glfwMakeContextCurrent(glfw_window_);
+  if (gl3wInit() != 0 || gl3wIsSupported(3, 2) == 0) {
+    throw Error("Unable to create an OpenGL 3.2 context.");
   }
 }
 
-Viewer::GlfwContext::GlfwContext() {
-  if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
+OffscreenContext::~OffscreenContext() {
+  if (glfw_window_ != nullptr) {
+    glfwDestroyWindow(glfw_window_);
   }
 }
 
-Viewer::GlfwContext::~GlfwContext() {
-  glfwTerminate();
+void OffscreenContext::MakeCurrent() {
+  // Activate the rendering context.
+  glfwMakeContextCurrent(glfw_window_);
+}
+
+void OffscreenContext::Release() {
+  // Deactivate the rendering context.
+  glfwMakeContextCurrent(nullptr);
 }
 
 }  // namespace viewer

@@ -26,50 +26,60 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
+#include "viewer/main_window_worker.h"
 
-#include "GL/gl3w.h"
-#include "GLFW/glfw3.h"
-#include "imgui/imgui.h"
+#include <iostream>
 
-#include "viewer/error.h"
-#include "viewer/main_window.h"
+#include "viewer/ui/offscreen_context.h"
 #include "viewer/utils/make_unique.h"
 
 namespace viewer {
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = make_unique<MainWindow>();
+MainWindowWorker::MainWindowWorker(const Window& share_window)
+    : terminate_thread_(false) {
+  // Create a new off screen OpenGL context.
+  gl_context_ = make_unique<OffscreenContext>(share_window);
+  gl_context_->Release();
+
+  // Start the worker thread.
+  thread_ = std::thread(&MainWindowWorker::Run, this);
+}
+
+MainWindowWorker::~MainWindowWorker() {
+  // Terminate the worker thread.
+  terminate_thread_ = true;
+  condition_variable_.notify_all();
+  thread_.join();
+}
+
+void MainWindowWorker::Run() {
+  std::cout << "Started the main worker thread." << std::endl;
+
+  // Activate the off screen OpenGL context.
+  gl_context_->MakeCurrent();
 
   // Main loop.
-  while (!main_window_->ShouldClose()) {
-    glfwPollEvents();
+  while (true) {
+    // Wait for a signal.
+    {
+      std::unique_lock<std::mutex> lock(mutex_);
+      while (!terminate_thread_) {
+        condition_variable_.wait(lock);
+      }
 
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
+      // Were we requested to terminate?
+      if (terminate_thread_) {
+        break;
+      }
+    }
 
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // TODO(m): Paint the 3D world.
-
-    // Paint the UI.
-    main_window_->PaintUi();
-
-    main_window_->SwapBuffers();
+    // TODO(m): Implement something interesting here, e.g. an event queue.
   }
-}
 
-Viewer::GlfwContext::GlfwContext() {
-  if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
-  }
-}
+  // Release the off screen OpenGL context.
+  gl_context_->MakeCurrent();
 
-Viewer::GlfwContext::~GlfwContext() {
-  glfwTerminate();
+  std::cout << "Exiting the main worker thread." << std::endl;
 }
 
 }  // namespace viewer

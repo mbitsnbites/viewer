@@ -26,50 +26,45 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
+#ifndef VIEWER_UI_OFFSCREEN_CONTEXT_H_
+#define VIEWER_UI_OFFSCREEN_CONTEXT_H_
 
-#include "GL/gl3w.h"
-#include "GLFW/glfw3.h"
-#include "imgui/imgui.h"
-
-#include "viewer/error.h"
-#include "viewer/main_window.h"
-#include "viewer/utils/make_unique.h"
+struct GLFWwindow;
 
 namespace viewer {
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = make_unique<MainWindow>();
+class Window;
 
-  // Main loop.
-  while (!main_window_->ShouldClose()) {
-    glfwPollEvents();
+/// @brief An offscreen OpenGL context.
+///
+/// The offscreen context is actually implemented as an invisible GLFW window.
+class OffscreenContext {
+ public:
+  /// @brief Construct a new offscreen context.
+  /// @param share_window The window with which to share OpenGL objects.
+  /// @note GLFW must have been initialized before calling the constructor.
+  explicit OffscreenContext(const Window& share_window);
 
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
+  /// @brief Destroy the offscreen context.
+  /// @note GLFW must still be initialzied when destroying the context.
+  virtual ~OffscreenContext();
 
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+  /// @brief Make the OpenGL context current in the calling thread.
+  void MakeCurrent();
 
-    // TODO(m): Paint the 3D world.
+  /// @brief Make no OpenGL context current in the calling thread.
+  void Release();
 
-    // Paint the UI.
-    main_window_->PaintUi();
+ protected:
+  GLFWwindow* glfw_window_ = nullptr;
 
-    main_window_->SwapBuffers();
-  }
-}
-
-Viewer::GlfwContext::GlfwContext() {
-  if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
-  }
-}
-
-Viewer::GlfwContext::~GlfwContext() {
-  glfwTerminate();
-}
+ private:
+  // Disable copy/move.
+  OffscreenContext(const OffscreenContext&) = delete;
+  OffscreenContext(OffscreenContext&&) = delete;
+  OffscreenContext& operator=(const OffscreenContext&) = delete;
+};
 
 }  // namespace viewer
+
+#endif  // VIEWER_UI_OFFSCREEN_CONTEXT_H_
