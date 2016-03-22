@@ -13,6 +13,8 @@ set(viewer_sources ${viewer_sources}
     graphics/shader.h)
 
 set(viewer_sources ${viewer_sources}
+    ui/offscreen_context.cc
+    ui/offscreen_context.h
     ui/ui_window.cc
     ui/ui_window.h
     ui/window.cc

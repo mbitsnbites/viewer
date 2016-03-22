@@ -66,6 +66,7 @@ class Window {
 
   int framebuffer_width() const { return framebuffer_width_; }
   int framebuffer_height() const { return framebuffer_height_; }
+  GLFWwindow* glfw_window() const { return glfw_window_; }
 
  protected:
   // Virtual GLFW callback handlers. Override these to catch window events.
