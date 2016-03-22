@@ -31,7 +31,7 @@
 
 #include "imgui/imgui.h"
 
-#include "viewer/ui/window.h"
+#include "viewer/ui/ui_window.h"
 
 namespace viewer {
 

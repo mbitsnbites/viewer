@@ -31,11 +31,7 @@
 
 #include <memory>
 
-#include "viewer/graphics/shader.h"
-
 struct GLFWwindow;
-struct ImDrawData;
-struct ImFontAtlas;
 
 namespace viewer {
 
@@ -133,70 +129,6 @@ class Window {
   Window(const Window&) = delete;
   Window(Window&&) = delete;
   Window& operator=(const Window&) = delete;
-};
-
-class UiWindow : public Window {
- public:
-  /// @brief Construct a new GLFW window with UI support.
-  /// @param width The inner width of the window.
-  /// @param height The inner height of the window.
-  /// @param title The title/caption of the window.
-  /// @note GLFW must have been initialized before calling the constructor.
-  UiWindow(int width, int height, const char* title);
-
-  /// @brief Destructor.
-  virtual ~UiWindow();
-
-  /// @brief Paint the UI.
-  void PaintUi();
-
- private:
-  void CreateDeviceObjects();
-  void CreateFontsTexture();
-
-  void BeginUi();
-  void EndUi();
-
-  /// @brief Define the UI using ImGui calls.
-  /// @note Override this method to render something meaningful.
-  virtual void DefineUi();
-
-  static void RenderDrawListsDispatch(ImDrawData* draw_data);
-  void RenderDrawLists(ImDrawData* draw_data);
-
-  static const char* GetClipboardText();
-  static void SetClipboardText(const char* text);
-
-  static void MouseButtonHandler(GLFWwindow* glfw_window,
-                                 int button,
-                                 int action,
-                                 int mods);
-  static void ScrollHandler(GLFWwindow* glfw_window,
-                            double x_offset,
-                            double y_offset);
-  static void KeyHandler(GLFWwindow* glfw_window,
-                         int key,
-                         int scan_code,
-                         int action,
-                         int mods);
-  static void CharHandler(GLFWwindow* glfw_window, unsigned int code_point);
-
-  void* imgui_context_ = nullptr;
-  std::unique_ptr<ImFontAtlas> font_atlas_;
-
-  double time_ = 0.0;
-  bool mouse_pressed_[3] = {false, false, false};
-  float mouse_wheel_ = 0.0f;
-  unsigned int font_texture_ = 0;
-  Shader shader_;
-  int uniform_tex_ = 0;
-  int uniform_proj_mtx_ = 0;
-  int attrib_position_ = 0;
-  int attrib_uv_ = 0;
-  int attrib_color_ = 0;
-  unsigned int vbo_handle_ = 0;
-  unsigned int vao_handle_ = 0;
-  unsigned int elements_handle_ = 0;
 };
 
 }  // namespace viewer
