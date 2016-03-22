@@ -31,7 +31,7 @@
 
 #include <memory>
 
-#include "viewer/ui/ui_window.h"
+#include "ui/ui_window.h"
 
 namespace viewer {
 
@@ -58,7 +58,7 @@ class Viewer {
   // is important).
   GlfwContext glfw_context_;
 
-  std::unique_ptr<UiWindow> main_window_;
+  std::unique_ptr<ui::UiWindow> main_window_;
 };
 
 }  // namespace viewer

@@ -42,6 +42,9 @@ add_subdirectory(third_party)
 get_filename_component(root "." ABSOLUTE)
 include_directories(${root})
 
+# Add project internal libraries.
+add_subdirectory(ui)
+
 # Add viewer porject(s).
 add_subdirectory(viewer)
 

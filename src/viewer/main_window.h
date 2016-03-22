@@ -33,13 +33,13 @@
 
 #include "imgui/imgui.h"
 
+#include "ui/ui_window.h"
 #include "viewer/main_window_worker.h"
-#include "viewer/ui/ui_window.h"
 
 namespace viewer {
 
 /// @brief The application main window.
-class MainWindow : public UiWindow {
+class MainWindow : public ui::UiWindow {
  public:
   MainWindow();
 

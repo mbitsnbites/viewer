@@ -35,10 +35,14 @@
 #include <mutex>
 #include <thread>
 
-namespace viewer {
+namespace ui {
 
 class OffscreenContext;
 class Window;
+
+}  // namespace ui
+
+namespace viewer {
 
 /// @brief The main worker.
 class MainWindowWorker {
@@ -46,7 +50,7 @@ class MainWindowWorker {
   /// @brief Constructor.
   /// @param share_window The window that the worker context will share OpenGL
   /// objects with.
-  explicit MainWindowWorker(const Window& share_window);
+  explicit MainWindowWorker(const ui::Window& share_window);
 
   /// @brief Destructor.
   ///
@@ -62,7 +66,7 @@ class MainWindowWorker {
   std::mutex mutex_;
   std::thread thread_;
 
-  std::unique_ptr<OffscreenContext> gl_context_;
+  std::unique_ptr<ui::OffscreenContext> gl_context_;
 
   // Disable copy/move.
   MainWindowWorker(const MainWindowWorker&) = delete;

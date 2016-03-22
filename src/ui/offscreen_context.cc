@@ -26,45 +26,50 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_UI_OFFSCREEN_CONTEXT_H_
-#define VIEWER_UI_OFFSCREEN_CONTEXT_H_
+#include "ui/offscreen_context.h"
 
-struct GLFWwindow;
+#include "GL/gl3w.h"
+#include "GLFW/glfw3.h"
 
-namespace viewer {
+#include "ui/window.h"
+#include "viewer/error.h"
 
-class Window;
+namespace ui {
 
-/// @brief An offscreen OpenGL context.
-///
-/// The offscreen context is actually implemented as an invisible GLFW window.
-class OffscreenContext {
- public:
-  /// @brief Construct a new offscreen context.
-  /// @param share_window The window with which to share OpenGL objects.
-  /// @note GLFW must have been initialized before calling the constructor.
-  explicit OffscreenContext(const Window& share_window);
+OffscreenContext::OffscreenContext(const Window& share_window) {
+  // Create a window.
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+  glfw_window_ =
+      glfwCreateWindow(1, 1, "", nullptr, share_window.glfw_window());
+  if (glfw_window_ == nullptr) {
+    throw viewer::Error("Unable to create the offscreen OpenGL context.");
+  }
 
-  /// @brief Destroy the offscreen context.
-  /// @note GLFW must still be initialzied when destroying the context.
-  virtual ~OffscreenContext();
+  // Initialize the OpenGL context.
+  glfwMakeContextCurrent(glfw_window_);
+  if (gl3wInit() != 0 || gl3wIsSupported(3, 2) == 0) {
+    throw viewer::Error("Unable to create an OpenGL 3.2 context.");
+  }
+}
 
-  /// @brief Make the OpenGL context current in the calling thread.
-  void MakeCurrent();
+OffscreenContext::~OffscreenContext() {
+  if (glfw_window_ != nullptr) {
+    glfwDestroyWindow(glfw_window_);
+  }
+}
 
-  /// @brief Make no OpenGL context current in the calling thread.
-  void Release();
+void OffscreenContext::MakeCurrent() {
+  // Activate the rendering context.
+  glfwMakeContextCurrent(glfw_window_);
+}
 
- protected:
-  GLFWwindow* glfw_window_ = nullptr;
+void OffscreenContext::Release() {
+  // Deactivate the rendering context.
+  glfwMakeContextCurrent(nullptr);
+}
 
- private:
-  // Disable copy/move.
-  OffscreenContext(const OffscreenContext&) = delete;
-  OffscreenContext(OffscreenContext&&) = delete;
-  OffscreenContext& operator=(const OffscreenContext&) = delete;
-};
-
-}  // namespace viewer
-
-#endif  // VIEWER_UI_OFFSCREEN_CONTEXT_H_
+}  // namespace ui

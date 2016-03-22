@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/ui/ui_window.h"
+#include "ui/ui_window.h"
 
 #include <cstdlib>
 
@@ -42,7 +42,7 @@
 #include "viewer/error.h"
 #include "viewer/utils/make_unique.h"
 
-namespace viewer {
+namespace ui {
 
 namespace {
 
@@ -52,7 +52,8 @@ UiWindow& GetUiWindow(GLFWwindow* glfw_window) {
   auto* window =
       reinterpret_cast<UiWindow*>(glfwGetWindowUserPointer(glfw_window));
   if (window == nullptr) {
-    throw Error("No matching Window found for the given GLFW window handle.");
+    throw viewer::Error(
+        "No matching Window found for the given GLFW window handle.");
   }
   return *window;
 }
@@ -71,7 +72,7 @@ UiWindow::UiWindow(int width, int height, const char* title)
   // Create a new ImGui context.
   imgui_context_ = std::malloc(ImGui::GetInternalStateSize());
   if (imgui_context_ == nullptr) {
-    throw Error("Could not create ImGui context.");
+    throw viewer::Error("Could not create ImGui context.");
   }
   ImGui::SetInternalState(imgui_context_, true);
 
@@ -82,7 +83,7 @@ UiWindow::UiWindow(int width, int height, const char* title)
   io.LogFilename = nullptr;
 
   // Create a new font atlas for this context.
-  font_atlas_ = make_unique<ImFontAtlas>();
+  font_atlas_ = viewer::make_unique<ImFontAtlas>();
   io.Fonts = font_atlas_.get();
 
   // Keyboard mapping. ImGui will use those indices to peek into the
@@ -156,7 +157,8 @@ void UiWindow::PaintUi() {
 void UiWindow::BeginUi() {
   // Activate this window for UI rendering.
   if (g_painting_ui_window != nullptr) {
-    throw Error("There is already an active UI window for this thread.");
+    throw viewer::Error(
+        "There is already an active UI window for this thread.");
   }
   g_painting_ui_window = this;
   ImGui::SetInternalState(imgui_context_);
@@ -214,7 +216,7 @@ void UiWindow::BeginUi() {
 
 void UiWindow::EndUi() {
   if (g_painting_ui_window == nullptr) {
-    throw Error("No active UI window.");
+    throw viewer::Error("No active UI window.");
   }
   ImGui::Render();
   g_painting_ui_window = nullptr;
@@ -326,7 +328,7 @@ void UiWindow::CreateFontsTexture() {
 
 void UiWindow::RenderDrawListsDispatch(ImDrawData* draw_data) {
   if (g_painting_ui_window == nullptr) {
-    throw Error("No active UI window.");
+    throw viewer::Error("No active UI window.");
   }
   g_painting_ui_window->RenderDrawLists(draw_data);
 }
@@ -468,14 +470,14 @@ void UiWindow::RenderDrawLists(ImDrawData* draw_data) {
 
 const char* UiWindow::GetClipboardText() {
   if (g_painting_ui_window == nullptr) {
-    throw Error("No active UI window.");
+    throw viewer::Error("No active UI window.");
   }
   return glfwGetClipboardString(g_painting_ui_window->glfw_window_);
 }
 
 void UiWindow::SetClipboardText(const char* text) {
   if (g_painting_ui_window == nullptr) {
-    throw Error("No active UI window.");
+    throw viewer::Error("No active UI window.");
   }
   glfwSetClipboardString(g_painting_ui_window->glfw_window_, text);
 }
@@ -538,4 +540,4 @@ void UiWindow::CharHandler(GLFWwindow* glfw_window, unsigned int code_point) {
   window.OnChar(code_point);
 }
 
-}  // namespace viewer
+}  // namespace ui
