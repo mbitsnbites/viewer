@@ -28,9 +28,13 @@
 
 #include "viewer/main_window.h"
 
+#include "viewer/utils/make_unique.h"
+
 namespace viewer {
 
 MainWindow::MainWindow() : UiWindow(1024, 576, "Viewer") {
+  // Create the worker, which runs in a separate thread.
+  worker_ = make_unique<MainWindowWorker>(*this);
 }
 
 void MainWindow::DefineUi() {

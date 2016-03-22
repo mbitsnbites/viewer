@@ -26,34 +26,50 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_MAIN_WINDOW_H_
-#define VIEWER_MAIN_WINDOW_H_
+#ifndef VIEWER_MAIN_WINDOW_WORKER_H_
+#define VIEWER_MAIN_WINDOW_WORKER_H_
 
+#include <atomic>
+#include <condition_variable>
 #include <memory>
-
-#include "imgui/imgui.h"
-
-#include "viewer/main_window_worker.h"
-#include "viewer/ui/ui_window.h"
+#include <mutex>
+#include <thread>
 
 namespace viewer {
 
-/// @brief The application main window.
-class MainWindow : public UiWindow {
+class OffscreenContext;
+class Window;
+
+/// @brief The main worker.
+class MainWindowWorker {
  public:
-  MainWindow();
+  /// @brief Constructor.
+  /// @param share_window The window that the worker context will share OpenGL
+  /// objects with.
+  explicit MainWindowWorker(const Window& share_window);
+
+  /// @brief Destructor.
+  ///
+  /// The destructor terminates the worker thread and blocks until the thread
+  /// has terminated gracefully.
+  ~MainWindowWorker();
 
  private:
-  void DefineUi() override;
+  void Run();
 
-  std::unique_ptr<MainWindowWorker> worker_;
+  std::atomic_bool terminate_thread_;
+  std::condition_variable condition_variable_;
+  std::mutex mutex_;
+  std::thread thread_;
 
-  ImVec4 color_value_ = ImColor(114, 144, 154);
-  float float_value_ = 0.5f;
-  bool show_main_window_ = true;
-  bool show_another_window_ = false;
+  std::unique_ptr<OffscreenContext> gl_context_;
+
+  // Disable copy/move.
+  MainWindowWorker(const MainWindowWorker&) = delete;
+  MainWindowWorker(MainWindowWorker&&) = delete;
+  MainWindowWorker& operator=(const MainWindowWorker&) = delete;
 };
 
 }  // namespace viewer
 
-#endif  // VIEWER_MAIN_WINDOW_H_
+#endif  // VIEWER_MAIN_WINDOW_WORKER_H_

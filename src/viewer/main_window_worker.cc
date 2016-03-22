@@ -26,34 +26,60 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_MAIN_WINDOW_H_
-#define VIEWER_MAIN_WINDOW_H_
-
-#include <memory>
-
-#include "imgui/imgui.h"
-
 #include "viewer/main_window_worker.h"
-#include "viewer/ui/ui_window.h"
+
+#include <iostream>
+
+#include "viewer/ui/offscreen_context.h"
+#include "viewer/utils/make_unique.h"
 
 namespace viewer {
 
-/// @brief The application main window.
-class MainWindow : public UiWindow {
- public:
-  MainWindow();
+MainWindowWorker::MainWindowWorker(const Window& share_window)
+    : terminate_thread_(false) {
+  // Create a new off screen OpenGL context.
+  gl_context_ = make_unique<OffscreenContext>(share_window);
+  gl_context_->Release();
 
- private:
-  void DefineUi() override;
+  // Start the worker thread.
+  thread_ = std::thread(&MainWindowWorker::Run, this);
+}
 
-  std::unique_ptr<MainWindowWorker> worker_;
+MainWindowWorker::~MainWindowWorker() {
+  // Terminate the worker thread.
+  terminate_thread_ = true;
+  condition_variable_.notify_all();
+  thread_.join();
+}
 
-  ImVec4 color_value_ = ImColor(114, 144, 154);
-  float float_value_ = 0.5f;
-  bool show_main_window_ = true;
-  bool show_another_window_ = false;
-};
+void MainWindowWorker::Run() {
+  std::cout << "Started the main worker thread." << std::endl;
+
+  // Activate the off screen OpenGL context.
+  gl_context_->MakeCurrent();
+
+  // Main loop.
+  while (true) {
+    // Wait for a signal.
+    {
+      std::unique_lock<std::mutex> lock(mutex_);
+      while (!terminate_thread_) {
+        condition_variable_.wait(lock);
+      }
+
+      // Were we requested to terminate?
+      if (terminate_thread_) {
+        break;
+      }
+    }
+
+    // TODO(m): Implement something interesting here, e.g. an event queue.
+  }
+
+  // Release the off screen OpenGL context.
+  gl_context_->MakeCurrent();
+
+  std::cout << "Exiting the main worker thread." << std::endl;
+}
 
 }  // namespace viewer
-
-#endif  // VIEWER_MAIN_WINDOW_H_

@@ -5,6 +5,8 @@ set(viewer_sources
     main.cc
     main_window.cc
     main_window.h
+    main_window_worker.cc
+    main_window_worker.h
     viewer.cc
     viewer.h)
 
