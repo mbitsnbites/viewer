@@ -32,15 +32,15 @@
 #include "GLFW/glfw3.h"
 #include "imgui/imgui.h"
 
-#include "viewer/error.h"
+#include "base/error.h"
+#include "base/make_unique.h"
 #include "viewer/main_window.h"
-#include "viewer/utils/make_unique.h"
 
 namespace viewer {
 
 void Viewer::Run() {
   // Create the main window.
-  main_window_ = make_unique<MainWindow>();
+  main_window_ = base::make_unique<MainWindow>();
 
   // Main loop.
   while (!main_window_->ShouldClose()) {
@@ -64,7 +64,7 @@ void Viewer::Run() {
 
 Viewer::GlfwContext::GlfwContext() {
   if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
+    throw base::Error("Unable to initialize GLFW.");
   }
 }
 

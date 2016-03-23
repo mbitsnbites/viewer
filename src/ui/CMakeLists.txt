@@ -9,4 +9,4 @@ set(ui_sources
     window.h)
 
 add_library(ui ${ui_sources})
-target_link_libraries(ui gl3w glfw ${GLFW_LIBRARIES} imgui)
+target_link_libraries(ui base gl3w glfw ${GLFW_LIBRARIES} imgui)

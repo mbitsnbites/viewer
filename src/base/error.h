@@ -26,21 +26,21 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include <iostream>
+#ifndef BASE_ERROR_H_
+#define BASE_ERROR_H_
 
-#include "base/error.h"
-#include "viewer/viewer.h"
+#include <stdexcept>
+#include <string>
 
-int main() {
-  try {
-    // Start the viewer.
-    viewer::Viewer viewer;
-    viewer.Run();
-  } catch (base::Error& e) {
-    std::cerr << "Error: " << e.what() << "\n";
-  } catch (...) {
-    std::cerr << "Error: Unhandled exception.\n";
-  }
+namespace base {
 
-  return 0;
-}
+/// @brief General error.
+class Error : public std::runtime_error {
+ public:
+  explicit Error(const std::string& what_arg);
+  explicit Error(const char* what_arg);
+};
+
+}  // namespace base
+
+#endif  // BASE_ERROR_H_

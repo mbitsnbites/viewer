@@ -31,7 +31,7 @@
 #include "GL/gl3w.h"
 #include "GLFW/glfw3.h"
 
-#include "viewer/error.h"
+#include "base/error.h"
 
 namespace ui {
 
@@ -41,7 +41,7 @@ Window& GetWindow(GLFWwindow* glfw_window) {
   auto* window =
       reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
   if (window == nullptr) {
-    throw viewer::Error(
+    throw base::Error(
         "No matching Window found for the given GLFW window handle.");
   }
   return *window;
@@ -57,7 +57,7 @@ Window::Window(int width, int height, const char* title) {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfw_window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
   if (glfw_window_ == nullptr) {
-    throw viewer::Error("Unable to open the GLFW window.");
+    throw base::Error("Unable to open the GLFW window.");
   }
 
   // Get initial window properties.
@@ -85,7 +85,7 @@ Window::Window(int width, int height, const char* title) {
   // Initialize the OpenGL context.
   glfwMakeContextCurrent(glfw_window_);
   if (gl3wInit() != 0 || gl3wIsSupported(3, 2) == 0) {
-    throw viewer::Error("Unable to create an OpenGL 3.2 context.");
+    throw base::Error("Unable to create an OpenGL 3.2 context.");
   }
 
   // Enable vertical sync.

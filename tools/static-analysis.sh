@@ -12,8 +12,8 @@ fi
 cd ${PROJECT_DIR}
 
 # Get a list of all the C++ source code files in this project.
-CPP_SOURCE_FILES=$(git ls-files 'src/viewer/*.cc' 'src/ui/*.cc')
-H_SOURCE_FILES=$(git ls-files 'src/viewer/*.h' 'src/ui/*.h')
+CPP_SOURCE_FILES=$(git ls-files 'src/viewer/*.cc' 'src/base/*.cc' 'src/ui/*.cc')
+H_SOURCE_FILES=$(git ls-files 'src/viewer/*.h' 'src/base/*.h' 'src/ui/*.h')
 ALL_SOURCE_FILES="${CPP_SOURCE_FILES} ${H_SOURCE_FILES}"
 
 # Run cpplint on all source files.

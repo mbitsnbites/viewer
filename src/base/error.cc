@@ -26,21 +26,14 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_ERROR_H_
-#define VIEWER_ERROR_H_
+#include "base/error.h"
 
-#include <stdexcept>
-#include <string>
+namespace base {
 
-namespace viewer {
+Error::Error(const std::string& what_arg) : std::runtime_error(what_arg) {
+}
 
-/// @brief General error.
-class Error : public std::runtime_error {
- public:
-  explicit Error(const std::string& what_arg) : std::runtime_error(what_arg) {}
-  explicit Error(const char* what_arg) : std::runtime_error(what_arg) {}
-};
+Error::Error(const char* what_arg) : std::runtime_error(what_arg) {
+}
 
-}  // namespace viewer
-
-#endif  // VIEWER_ERROR_H_
+}  // namespace base

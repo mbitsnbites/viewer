@@ -26,12 +26,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_UTILS_MAKE_UNIQUE_H_
-#define VIEWER_UTILS_MAKE_UNIQUE_H_
+#ifndef BASE_MAKE_UNIQUE_H_
+#define BASE_MAKE_UNIQUE_H_
 
 #include <memory>
 
-namespace viewer {
+namespace base {
 
 // We provide our own make_unique since we target C++11, not C++14.
 // TODO(m): Remove this helper and use std::make_unique instead once we move to
@@ -41,6 +41,6 @@ std::unique_ptr<T> make_unique(Args&&... args) {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
-}  // namespace viewer
+}  // namespace base
 
-#endif  // VIEWER_UTILS_MAKE_UNIQUE_H_
+#endif  // BASE_MAKE_UNIQUE_H_

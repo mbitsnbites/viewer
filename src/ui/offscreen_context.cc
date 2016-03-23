@@ -31,8 +31,8 @@
 #include "GL/gl3w.h"
 #include "GLFW/glfw3.h"
 
+#include "base/error.h"
 #include "ui/window.h"
-#include "viewer/error.h"
 
 namespace ui {
 
@@ -46,13 +46,13 @@ OffscreenContext::OffscreenContext(const Window& share_window) {
   glfw_window_ =
       glfwCreateWindow(1, 1, "", nullptr, share_window.glfw_window());
   if (glfw_window_ == nullptr) {
-    throw viewer::Error("Unable to create the offscreen OpenGL context.");
+    throw base::Error("Unable to create the offscreen OpenGL context.");
   }
 
   // Initialize the OpenGL context.
   glfwMakeContextCurrent(glfw_window_);
   if (gl3wInit() != 0 || gl3wIsSupported(3, 2) == 0) {
-    throw viewer::Error("Unable to create an OpenGL 3.2 context.");
+    throw base::Error("Unable to create an OpenGL 3.2 context.");
   }
 }
 
