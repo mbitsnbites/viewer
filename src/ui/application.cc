@@ -26,39 +26,26 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
+#include "ui/application.h"
 
-#include "GL/gl3w.h"
-#include "imgui/imgui.h"
+#include "GLFW/glfw3.h"
 
 #include "base/error.h"
-#include "base/make_unique.h"
-#include "viewer/main_window.h"
 
-namespace viewer {
+namespace ui {
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = base::make_unique<MainWindow>();
-
-  // Main loop.
-  while (!main_window_->ShouldClose()) {
-    PollEvents();
-
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
-
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // TODO(m): Paint the 3D world.
-
-    // Paint the UI.
-    main_window_->PaintUi();
-
-    main_window_->SwapBuffers();
+Application::Application() {
+  if (glfwInit() == GL_FALSE) {
+    throw base::Error("Unable to initialize GLFW.");
   }
 }
 
-}  // namespace viewer
+Application::~Application() {
+  glfwTerminate();
+}
+
+void Application::PollEvents() {
+  glfwPollEvents();
+}
+
+}  // namespace ui

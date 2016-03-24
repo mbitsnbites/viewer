@@ -1,6 +1,8 @@
 # -*- mode: CMake; tab-width: 2; indent-tabs-mode: nil; -*-
 
 set(ui_sources
+    application.cc
+    application.h
     offscreen_context.cc
     offscreen_context.h
     ui_window.cc

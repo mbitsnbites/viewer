@@ -12,4 +12,4 @@ set(viewer_sources
 find_package(Threads REQUIRED)
 
 add_executable(viewer ${viewer_sources})
-target_link_libraries(viewer base ui gl3w glfw ${GLFW_LIBRARIES} imgui ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(viewer base ui gl3w imgui ${CMAKE_THREAD_LIBS_INIT})

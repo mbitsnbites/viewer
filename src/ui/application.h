@@ -26,39 +26,37 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/viewer.h"
+#ifndef UI_APPLICATION_H_
+#define UI_APPLICATION_H_
 
-#include "GL/gl3w.h"
-#include "imgui/imgui.h"
+namespace ui {
 
-#include "base/error.h"
-#include "base/make_unique.h"
-#include "viewer/main_window.h"
+/// @brief A parent class for UI applications.
+///
+/// Applications that intend to use the ui library should inherit from this
+/// class.
+///
+/// In particular, the Application class handles GLFW initialization and
+/// termination.
+class Application {
+ public:
+  /// @brief Constructor.
+  Application();
 
-namespace viewer {
+  /// @brief Destructor.
+  ~Application();
 
-void Viewer::Run() {
-  // Create the main window.
-  main_window_ = base::make_unique<MainWindow>();
+ protected:
+  /// @brief Poll for new UI events.
+  void PollEvents();
 
-  // Main loop.
-  while (!main_window_->ShouldClose()) {
-    PollEvents();
+ private:
+  // Disable copy/move.
+  Application(const Application&) = delete;
+  Application(Application&&) = delete;
+  Application& operator=(const Application&) = delete;
+};
 
-    // Activate the main window for painting.
-    main_window_->BeginFrame();
+}  // namespace ui
 
-    // Clear the screen.
-    glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // TODO(m): Paint the 3D world.
-
-    // Paint the UI.
-    main_window_->PaintUi();
-
-    main_window_->SwapBuffers();
-  }
-}
-
-}  // namespace viewer
+#endif  // UI_APPLICATION_H_
