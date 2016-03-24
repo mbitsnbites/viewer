@@ -9,9 +9,5 @@ set(viewer_sources
     viewer.cc
     viewer.h)
 
-set(viewer_sources ${viewer_sources}
-    graphics/shader.cc
-    graphics/shader.h)
-
 add_executable(viewer ${viewer_sources})
 target_link_libraries(viewer base ui gl3w glfw ${GLFW_LIBRARIES} imgui)

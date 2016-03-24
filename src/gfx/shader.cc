@@ -26,14 +26,14 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#include "viewer/graphics/shader.h"
+#include "gfx/shader.h"
 
 #include <iostream>
 #include <vector>
 
 #include "GL/gl3w.h"
 
-namespace viewer {
+namespace gfx {
 
 namespace {
 
@@ -131,4 +131,4 @@ void Shader::UseProgram() {
   }
 }
 
-}  // namespace viewer
+}  // namespace gfx

@@ -26,10 +26,10 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_GRAPHICS_SHADER_H_
-#define VIEWER_GRAPHICS_SHADER_H_
+#ifndef GFX_SHADER_H_
+#define GFX_SHADER_H_
 
-namespace viewer {
+namespace gfx {
 
 /// @brief An OpenGL shader program.
 class Shader {
@@ -51,6 +51,6 @@ class Shader {
   bool linked_ = false;
 };
 
-}  // namespace viewer
+}  // namespace gfx
 
-#endif  // VIEWER_GRAPHICS_SHADER_H_
+#endif  // GFX_SHADER_H_

@@ -31,8 +31,8 @@
 
 #include <memory>
 
+#include "gfx/shader.h"
 #include "ui/window.h"
-#include "viewer/graphics/shader.h"
 
 struct ImDrawData;
 struct ImFontAtlas;
@@ -93,7 +93,7 @@ class UiWindow : public Window {
   bool mouse_pressed_[3] = {false, false, false};
   float mouse_wheel_ = 0.0f;
   unsigned int font_texture_ = 0;
-  viewer::Shader shader_;
+  gfx::Shader shader_;
   int uniform_tex_ = 0;
   int uniform_proj_mtx_ = 0;
   int attrib_position_ = 0;

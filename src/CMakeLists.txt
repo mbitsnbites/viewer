@@ -44,6 +44,7 @@ include_directories(${root})
 
 # Add project internal libraries.
 add_subdirectory(base)
+add_subdirectory(gfx)
 add_subdirectory(ui)
 
 # Add viewer porject(s).
