@@ -23,6 +23,11 @@ script:
     - cd out_release
     - cmake -GNinja -DCMAKE_BUILD_TYPE=Release ../src
     - cmake --build .
+    - cd ..
+    - mkdir out_shared
+    - cd out_shared
+    - cmake -GNinja -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SHARED_LIBS=ON ../src
+    - cmake --build .
 notifications:
     email:
         recipients:
