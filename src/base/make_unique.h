@@ -26,31 +26,21 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_GRAPHICS_SHADER_H_
-#define VIEWER_GRAPHICS_SHADER_H_
+#ifndef BASE_MAKE_UNIQUE_H_
+#define BASE_MAKE_UNIQUE_H_
 
-namespace viewer {
+#include <memory>
 
-/// @brief An OpenGL shader program.
-class Shader {
- public:
-  void Compile(const char* vert_src, const char* frag_src);
-  void Delete();
+namespace base {
 
-  int GetAttribLocation(const char* name);
-  int GetUniformLocation(const char* name);
-  void UseProgram();
+// We provide our own make_unique since we target C++11, not C++14.
+// TODO(m): Remove this helper and use std::make_unique instead once we move to
+// C++14.
+template <typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args) {
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
 
-  unsigned int handle() const { return handle_; }
-  bool linked() const { return linked_; }
+}  // namespace base
 
- private:
-  unsigned int handle_ = 0;
-  unsigned int vert_handle_ = 0;
-  unsigned int frag_handle_ = 0;
-  bool linked_ = false;
-};
-
-}  // namespace viewer
-
-#endif  // VIEWER_GRAPHICS_SHADER_H_
+#endif  // BASE_MAKE_UNIQUE_H_

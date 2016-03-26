@@ -2,9 +2,16 @@
 
 # We're not interested in warnings for 3rd party libraries.
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /w")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
+  # Remove any warning flags (avoid MSVC "Command line warning D9025").
+  string(REGEX REPLACE " /W[0-4]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+  string(REGEX REPLACE " /W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+  # Inhibit warnings.
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W0")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W0")
 else()
+  # Inhibit warnings (append -w at the end of the compiler flags strings,
+  # overriding any previous warning settings).
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -w")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 endif()

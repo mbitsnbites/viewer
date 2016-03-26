@@ -26,54 +26,37 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_MAIN_WINDOW_WORKER_H_
-#define VIEWER_MAIN_WINDOW_WORKER_H_
-
-#include <atomic>
-#include <condition_variable>
-#include <memory>
-#include <mutex>
-#include <thread>
+#ifndef UI_APPLICATION_H_
+#define UI_APPLICATION_H_
 
 namespace ui {
 
-class OffscreenContext;
-class Window;
+/// @brief A parent class for UI applications.
+///
+/// Applications that intend to use the ui library should inherit from this
+/// class.
+///
+/// In particular, the Application class handles GLFW initialization and
+/// termination.
+class Application {
+ public:
+  /// @brief Constructor.
+  Application();
+
+  /// @brief Destructor.
+  ~Application();
+
+ protected:
+  /// @brief Poll for new UI events.
+  void PollEvents();
+
+ private:
+  // Disable copy/move.
+  Application(const Application&) = delete;
+  Application(Application&&) = delete;
+  Application& operator=(const Application&) = delete;
+};
 
 }  // namespace ui
 
-namespace viewer {
-
-/// @brief The main worker.
-class MainWindowWorker {
- public:
-  /// @brief Constructor.
-  /// @param share_window The window that the worker context will share OpenGL
-  /// objects with.
-  explicit MainWindowWorker(const ui::Window& share_window);
-
-  /// @brief Destructor.
-  ///
-  /// The destructor terminates the worker thread and blocks until the thread
-  /// has terminated gracefully.
-  ~MainWindowWorker();
-
- private:
-  void Run();
-
-  std::atomic_bool terminate_thread_;
-  std::condition_variable condition_variable_;
-  std::mutex mutex_;
-  std::thread thread_;
-
-  std::unique_ptr<ui::OffscreenContext> gl_context_;
-
-  // Disable copy/move.
-  MainWindowWorker(const MainWindowWorker&) = delete;
-  MainWindowWorker(MainWindowWorker&&) = delete;
-  MainWindowWorker& operator=(const MainWindowWorker&) = delete;
-};
-
-}  // namespace viewer
-
-#endif  // VIEWER_MAIN_WINDOW_WORKER_H_
+#endif  // UI_APPLICATION_H_

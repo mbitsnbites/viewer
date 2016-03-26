@@ -31,34 +31,20 @@
 
 #include <memory>
 
-#include "viewer/ui/ui_window.h"
+#include "ui/application.h"
+#include "ui/ui_window.h"
 
 namespace viewer {
 
 /// @brief The viewer application instance.
-class Viewer {
+class Viewer : public ui::Application {
  public:
   /// @brief Run the application.
   /// @note This method blocks until the application terminates.
   void Run();
 
  private:
-  /// @brief A class for handling GLFW initialization and termination.
-  class GlfwContext {
-   public:
-    /// @brief Initialize GLFW.
-    GlfwContext();
-
-    /// @brief Terminate GLFW.
-    ~GlfwContext();
-  };
-
-  // Note: The GLFW context is initialized before any GLFW windows are created,
-  // and destroyed after all GLFW windows have been destroyed (i.e. member order
-  // is important).
-  GlfwContext glfw_context_;
-
-  std::unique_ptr<UiWindow> main_window_;
+  std::unique_ptr<ui::UiWindow> main_window_;
 };
 
 }  // namespace viewer

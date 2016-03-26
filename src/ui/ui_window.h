@@ -26,18 +26,18 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_UI_UI_WINDOW_H_
-#define VIEWER_UI_UI_WINDOW_H_
+#ifndef UI_UI_WINDOW_H_
+#define UI_UI_WINDOW_H_
 
 #include <memory>
 
-#include "viewer/graphics/shader.h"
-#include "viewer/ui/window.h"
+#include "gfx/shader.h"
+#include "ui/window.h"
 
 struct ImDrawData;
 struct ImFontAtlas;
 
-namespace viewer {
+namespace ui {
 
 /// @brief A GLFW window with support for ImGui UI rendering.
 class UiWindow : public Window {
@@ -93,7 +93,7 @@ class UiWindow : public Window {
   bool mouse_pressed_[3] = {false, false, false};
   float mouse_wheel_ = 0.0f;
   unsigned int font_texture_ = 0;
-  Shader shader_;
+  gfx::Shader shader_;
   int uniform_tex_ = 0;
   int uniform_proj_mtx_ = 0;
   int attrib_position_ = 0;
@@ -104,6 +104,6 @@ class UiWindow : public Window {
   unsigned int elements_handle_ = 0;
 };
 
-}  // namespace viewer
+}  // namespace ui
 
-#endif  // VIEWER_UI_UI_WINDOW_H_
+#endif  // UI_UI_WINDOW_H_

@@ -29,22 +29,21 @@
 #include "viewer/viewer.h"
 
 #include "GL/gl3w.h"
-#include "GLFW/glfw3.h"
 #include "imgui/imgui.h"
 
-#include "viewer/error.h"
+#include "base/error.h"
+#include "base/make_unique.h"
 #include "viewer/main_window.h"
-#include "viewer/utils/make_unique.h"
 
 namespace viewer {
 
 void Viewer::Run() {
   // Create the main window.
-  main_window_ = make_unique<MainWindow>();
+  main_window_ = base::make_unique<MainWindow>();
 
   // Main loop.
   while (!main_window_->ShouldClose()) {
-    glfwPollEvents();
+    PollEvents();
 
     // Activate the main window for painting.
     main_window_->BeginFrame();
@@ -60,16 +59,6 @@ void Viewer::Run() {
 
     main_window_->SwapBuffers();
   }
-}
-
-Viewer::GlfwContext::GlfwContext() {
-  if (glfwInit() == GL_FALSE) {
-    throw Error("Unable to initialize GLFW.");
-  }
-}
-
-Viewer::GlfwContext::~GlfwContext() {
-  glfwTerminate();
 }
 
 }  // namespace viewer

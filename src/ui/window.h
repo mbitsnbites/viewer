@@ -26,14 +26,14 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_UI_WINDOW_H_
-#define VIEWER_UI_WINDOW_H_
+#ifndef UI_WINDOW_H_
+#define UI_WINDOW_H_
 
 #include <memory>
 
 struct GLFWwindow;
 
-namespace viewer {
+namespace ui {
 
 /// @brief A GLFW window.
 class Window {
@@ -132,6 +132,6 @@ class Window {
   Window& operator=(const Window&) = delete;
 };
 
-}  // namespace viewer
+}  // namespace ui
 
-#endif  // VIEWER_UI_WINDOW_H_
+#endif  // UI_WINDOW_H_

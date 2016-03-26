@@ -26,45 +26,14 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_UI_OFFSCREEN_CONTEXT_H_
-#define VIEWER_UI_OFFSCREEN_CONTEXT_H_
+#include "base/error.h"
 
-struct GLFWwindow;
+namespace base {
 
-namespace viewer {
+Error::Error(const std::string& what_arg) : std::runtime_error(what_arg) {
+}
 
-class Window;
+Error::Error(const char* what_arg) : std::runtime_error(what_arg) {
+}
 
-/// @brief An offscreen OpenGL context.
-///
-/// The offscreen context is actually implemented as an invisible GLFW window.
-class OffscreenContext {
- public:
-  /// @brief Construct a new offscreen context.
-  /// @param share_window The window with which to share OpenGL objects.
-  /// @note GLFW must have been initialized before calling the constructor.
-  explicit OffscreenContext(const Window& share_window);
-
-  /// @brief Destroy the offscreen context.
-  /// @note GLFW must still be initialzied when destroying the context.
-  virtual ~OffscreenContext();
-
-  /// @brief Make the OpenGL context current in the calling thread.
-  void MakeCurrent();
-
-  /// @brief Make no OpenGL context current in the calling thread.
-  void Release();
-
- protected:
-  GLFWwindow* glfw_window_ = nullptr;
-
- private:
-  // Disable copy/move.
-  OffscreenContext(const OffscreenContext&) = delete;
-  OffscreenContext(OffscreenContext&&) = delete;
-  OffscreenContext& operator=(const OffscreenContext&) = delete;
-};
-
-}  // namespace viewer
-
-#endif  // VIEWER_UI_OFFSCREEN_CONTEXT_H_
+}  // namespace base

@@ -30,15 +30,15 @@
 
 #include <iostream>
 
-#include "viewer/ui/offscreen_context.h"
-#include "viewer/utils/make_unique.h"
+#include "base/make_unique.h"
+#include "ui/offscreen_context.h"
 
 namespace viewer {
 
-MainWindowWorker::MainWindowWorker(const Window& share_window)
+MainWindowWorker::MainWindowWorker(const ui::Window& share_window)
     : terminate_thread_(false) {
   // Create a new off screen OpenGL context.
-  gl_context_ = make_unique<OffscreenContext>(share_window);
+  gl_context_ = base::make_unique<ui::OffscreenContext>(share_window);
   gl_context_->Release();
 
   // Start the worker thread.

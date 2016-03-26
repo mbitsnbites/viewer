@@ -26,54 +26,21 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_MAIN_WINDOW_WORKER_H_
-#define VIEWER_MAIN_WINDOW_WORKER_H_
+#ifndef BASE_ERROR_H_
+#define BASE_ERROR_H_
 
-#include <atomic>
-#include <condition_variable>
-#include <memory>
-#include <mutex>
-#include <thread>
+#include <stdexcept>
+#include <string>
 
-namespace ui {
+namespace base {
 
-class OffscreenContext;
-class Window;
-
-}  // namespace ui
-
-namespace viewer {
-
-/// @brief The main worker.
-class MainWindowWorker {
+/// @brief General error.
+class Error : public std::runtime_error {
  public:
-  /// @brief Constructor.
-  /// @param share_window The window that the worker context will share OpenGL
-  /// objects with.
-  explicit MainWindowWorker(const ui::Window& share_window);
-
-  /// @brief Destructor.
-  ///
-  /// The destructor terminates the worker thread and blocks until the thread
-  /// has terminated gracefully.
-  ~MainWindowWorker();
-
- private:
-  void Run();
-
-  std::atomic_bool terminate_thread_;
-  std::condition_variable condition_variable_;
-  std::mutex mutex_;
-  std::thread thread_;
-
-  std::unique_ptr<ui::OffscreenContext> gl_context_;
-
-  // Disable copy/move.
-  MainWindowWorker(const MainWindowWorker&) = delete;
-  MainWindowWorker(MainWindowWorker&&) = delete;
-  MainWindowWorker& operator=(const MainWindowWorker&) = delete;
+  explicit Error(const std::string& what_arg);
+  explicit Error(const char* what_arg);
 };
 
-}  // namespace viewer
+}  // namespace base
 
-#endif  // VIEWER_MAIN_WINDOW_WORKER_H_
+#endif  // BASE_ERROR_H_

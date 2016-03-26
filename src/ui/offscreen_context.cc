@@ -26,21 +26,50 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
-#ifndef VIEWER_ERROR_H_
-#define VIEWER_ERROR_H_
+#include "ui/offscreen_context.h"
 
-#include <stdexcept>
-#include <string>
+#include "GL/gl3w.h"
+#include "GLFW/glfw3.h"
 
-namespace viewer {
+#include "base/error.h"
+#include "ui/window.h"
 
-/// @brief General error.
-class Error : public std::runtime_error {
- public:
-  explicit Error(const std::string& what_arg) : std::runtime_error(what_arg) {}
-  explicit Error(const char* what_arg) : std::runtime_error(what_arg) {}
-};
+namespace ui {
 
-}  // namespace viewer
+OffscreenContext::OffscreenContext(const Window& share_window) {
+  // Create a window.
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+  glfw_window_ =
+      glfwCreateWindow(1, 1, "", nullptr, share_window.glfw_window());
+  if (glfw_window_ == nullptr) {
+    throw base::Error("Unable to create the offscreen OpenGL context.");
+  }
 
-#endif  // VIEWER_ERROR_H_
+  // Initialize the OpenGL context.
+  glfwMakeContextCurrent(glfw_window_);
+  if (gl3wInit() != 0 || gl3wIsSupported(3, 2) == 0) {
+    throw base::Error("Unable to create an OpenGL 3.2 context.");
+  }
+}
+
+OffscreenContext::~OffscreenContext() {
+  if (glfw_window_ != nullptr) {
+    glfwDestroyWindow(glfw_window_);
+  }
+}
+
+void OffscreenContext::MakeCurrent() {
+  // Activate the rendering context.
+  glfwMakeContextCurrent(glfw_window_);
+}
+
+void OffscreenContext::Release() {
+  // Deactivate the rendering context.
+  glfwMakeContextCurrent(nullptr);
+}
+
+}  // namespace ui

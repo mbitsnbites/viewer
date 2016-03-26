@@ -28,7 +28,7 @@
 
 #include <iostream>
 
-#include "viewer/error.h"
+#include "base/error.h"
 #include "viewer/viewer.h"
 
 int main() {
@@ -36,7 +36,7 @@ int main() {
     // Start the viewer.
     viewer::Viewer viewer;
     viewer.Run();
-  } catch (viewer::Error& e) {
+  } catch (base::Error& e) {
     std::cerr << "Error: " << e.what() << "\n";
   } catch (...) {
     std::cerr << "Error: Unhandled exception.\n";
