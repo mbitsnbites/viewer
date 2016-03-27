@@ -46,6 +46,8 @@ class MainWindow : public ui::UiWindow {
  private:
   void DefineUi() override;
 
+  void OnFramebufferSize(int width, int height) override;
+
   std::unique_ptr<MainWindowWorker> worker_;
 
   ImVec4 color_value_ = ImColor(114, 144, 154);
