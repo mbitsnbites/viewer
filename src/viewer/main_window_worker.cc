@@ -61,25 +61,41 @@ void MainWindowWorker::Run() {
   // Main loop.
   while (true) {
     // Wait for a signal.
-    {
-      std::unique_lock<std::mutex> lock(mutex_);
-      while (!terminate_thread_) {
-        condition_variable_.wait(lock);
-      }
-
-      // Were we requested to terminate?
-      if (terminate_thread_) {
-        break;
-      }
+    std::unique_lock<std::mutex> lock(mutex_);
+    while (call_queue_.empty() && !terminate_thread_) {
+      condition_variable_.wait(lock);
     }
 
-    // TODO(m): Implement something interesting here, e.g. an event queue.
+    // Were we requested to terminate?
+    if (terminate_thread_) {
+      break;
+    }
+
+    // Call a method that was posted on the call queue.
+    if (!call_queue_.empty()) {
+      // Pop the function call from the queue.
+      auto fun = call_queue_.front();
+      call_queue_.pop();
+
+      // Unlock the mutex and call the function.
+      lock.unlock();
+      fun();
+    }
+
+    // TODO(m): Repaint the scene if necessary.
   }
 
   // Release the off screen OpenGL context.
-  gl_context_->MakeCurrent();
+  gl_context_->Release();
 
   std::cout << "Exiting the main worker thread." << std::endl;
+}
+
+void MainWindowWorker::AppendFunctionCallToQueue(
+    const std::function<void()>& fun) {
+  std::unique_lock<std::mutex> lock(mutex_);
+  call_queue_.push(fun);
+  condition_variable_.notify_all();
 }
 
 }  // namespace viewer
