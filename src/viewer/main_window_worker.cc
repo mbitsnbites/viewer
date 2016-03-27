@@ -52,6 +52,11 @@ MainWindowWorker::~MainWindowWorker() {
   thread_.join();
 }
 
+void MainWindowWorker::SetFramebufferSize(int width, int height) {
+  AppendFunctionCallToQueue(std::bind(&MainWindowWorker::SetFramebufferSizeImpl,
+                                      this, width, height));
+}
+
 void MainWindowWorker::Run() {
   std::cout << "Started the main worker thread." << std::endl;
 
@@ -96,6 +101,12 @@ void MainWindowWorker::AppendFunctionCallToQueue(
   std::unique_lock<std::mutex> lock(mutex_);
   call_queue_.push(fun);
   condition_variable_.notify_all();
+}
+
+void MainWindowWorker::SetFramebufferSizeImpl(int width, int height) {
+  // TODO(m): Update the worker framebuffer size.
+  std::cout << "SetFramebufferSizeImpl(" << width << "," << height << ");"
+            << std::endl;
 }
 
 }  // namespace viewer

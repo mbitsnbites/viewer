@@ -35,6 +35,9 @@ namespace viewer {
 MainWindow::MainWindow() : UiWindow(1024, 576, "Viewer") {
   // Create the worker, which runs in a separate thread.
   worker_ = base::make_unique<MainWindowWorker>(*this);
+
+  // Set the initial framebuffer size.
+  worker_->SetFramebufferSize(framebuffer_width_, framebuffer_height_);
 }
 
 void MainWindow::DefineUi() {
@@ -60,6 +63,10 @@ void MainWindow::DefineUi() {
     ImGui::Text("Hello");
     ImGui::End();
   }
+}
+
+void MainWindow::OnFramebufferSize(int width, int height) {
+  worker_->SetFramebufferSize(width, height);
 }
 
 }  // namespace viewer

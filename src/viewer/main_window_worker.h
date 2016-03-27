@@ -60,10 +60,17 @@ class MainWindowWorker {
   /// has terminated gracefully.
   ~MainWindowWorker();
 
+  /// @brief Update the framebuffer size.
+  /// @param width The new width of the framebuffer.
+  /// @param height The new height of the framebuffer.
+  void SetFramebufferSize(int width, int height);
+
  private:
   void Run();
 
   void AppendFunctionCallToQueue(const std::function<void()>& fun);
+
+  void SetFramebufferSizeImpl(int width, int height);
 
   std::atomic_bool terminate_thread_;
   std::condition_variable condition_variable_;
