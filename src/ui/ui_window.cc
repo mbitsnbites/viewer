@@ -490,7 +490,8 @@ void UiWindow::MouseButtonHandler(GLFWwindow* glfw_window,
     window.mouse_pressed_[button] = true;
   }
 
-  window.OnMouseButton(button, action, mods);
+  window.OnMouseButton(ToMouseButton(button), action == GLFW_PRESS,
+                       ToModifiers(mods));
 }
 
 void UiWindow::ScrollHandler(GLFWwindow* glfw_window,
@@ -525,7 +526,8 @@ void UiWindow::KeyHandler(GLFWwindow* glfw_window,
       io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
   io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 
-  window.OnKey(key, scan_code, action, mods);
+  window.OnKey(ToKeyCode(key), scan_code, action == GLFW_PRESS,
+               ToModifiers(mods));
 }
 
 void UiWindow::CharHandler(GLFWwindow* glfw_window, unsigned int code_point) {

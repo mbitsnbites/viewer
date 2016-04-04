@@ -49,6 +49,17 @@ Window& GetWindow(GLFWwindow* glfw_window) {
 
 }  // namespace
 
+Modifiers Modifiers::operator+(const Modifiers& other) {
+  Modifiers result(*this);
+  result += other;
+  return result;
+}
+
+const Modifiers& Modifiers::operator+=(const Modifiers& other) {
+  mask_ |= other.mask_;
+  return *this;
+}
+
 Window::Window(int width, int height, const char* title) {
   // Create a window.
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -116,6 +127,293 @@ void Window::SwapBuffers() {
   glfwSwapBuffers(glfw_window_);
 }
 
+MouseButton Window::ToMouseButton(int glfw_mouse_button) {
+  switch (glfw_mouse_button) {
+    default:
+    case GLFW_MOUSE_BUTTON_1:
+      return MouseButton::Button1;
+    case GLFW_MOUSE_BUTTON_2:
+      return MouseButton::Button2;
+    case GLFW_MOUSE_BUTTON_3:
+      return MouseButton::Button3;
+    case GLFW_MOUSE_BUTTON_4:
+      return MouseButton::Button4;
+    case GLFW_MOUSE_BUTTON_5:
+      return MouseButton::Button5;
+    case GLFW_MOUSE_BUTTON_6:
+      return MouseButton::Button6;
+    case GLFW_MOUSE_BUTTON_7:
+      return MouseButton::Button7;
+    case GLFW_MOUSE_BUTTON_8:
+      return MouseButton::Button8;
+  }
+}
+
+KeyCode Window::ToKeyCode(int glfw_key_code) {
+  switch (glfw_key_code) {
+    default:
+    case GLFW_KEY_UNKNOWN:
+      return KeyCode::Unknown;
+    case GLFW_KEY_SPACE:
+      return KeyCode::Space;
+    case GLFW_KEY_APOSTROPHE:
+      return KeyCode::Apostrophe;
+    case GLFW_KEY_COMMA:
+      return KeyCode::Comma;
+    case GLFW_KEY_MINUS:
+      return KeyCode::Minus;
+    case GLFW_KEY_PERIOD:
+      return KeyCode::Period;
+    case GLFW_KEY_SLASH:
+      return KeyCode::Slash;
+    case GLFW_KEY_0:
+      return KeyCode::Zero;
+    case GLFW_KEY_1:
+      return KeyCode::One;
+    case GLFW_KEY_2:
+      return KeyCode::Two;
+    case GLFW_KEY_3:
+      return KeyCode::Three;
+    case GLFW_KEY_4:
+      return KeyCode::Four;
+    case GLFW_KEY_5:
+      return KeyCode::Five;
+    case GLFW_KEY_6:
+      return KeyCode::Six;
+    case GLFW_KEY_7:
+      return KeyCode::Seven;
+    case GLFW_KEY_8:
+      return KeyCode::Eight;
+    case GLFW_KEY_9:
+      return KeyCode::Nine;
+    case GLFW_KEY_SEMICOLON:
+      return KeyCode::Semicolon;
+    case GLFW_KEY_EQUAL:
+      return KeyCode::Equal;
+    case GLFW_KEY_A:
+      return KeyCode::A;
+    case GLFW_KEY_B:
+      return KeyCode::B;
+    case GLFW_KEY_C:
+      return KeyCode::C;
+    case GLFW_KEY_D:
+      return KeyCode::D;
+    case GLFW_KEY_E:
+      return KeyCode::E;
+    case GLFW_KEY_F:
+      return KeyCode::F;
+    case GLFW_KEY_G:
+      return KeyCode::G;
+    case GLFW_KEY_H:
+      return KeyCode::H;
+    case GLFW_KEY_I:
+      return KeyCode::I;
+    case GLFW_KEY_J:
+      return KeyCode::J;
+    case GLFW_KEY_K:
+      return KeyCode::K;
+    case GLFW_KEY_L:
+      return KeyCode::L;
+    case GLFW_KEY_M:
+      return KeyCode::M;
+    case GLFW_KEY_N:
+      return KeyCode::N;
+    case GLFW_KEY_O:
+      return KeyCode::O;
+    case GLFW_KEY_P:
+      return KeyCode::P;
+    case GLFW_KEY_Q:
+      return KeyCode::Q;
+    case GLFW_KEY_R:
+      return KeyCode::R;
+    case GLFW_KEY_S:
+      return KeyCode::S;
+    case GLFW_KEY_T:
+      return KeyCode::T;
+    case GLFW_KEY_U:
+      return KeyCode::U;
+    case GLFW_KEY_V:
+      return KeyCode::V;
+    case GLFW_KEY_W:
+      return KeyCode::W;
+    case GLFW_KEY_X:
+      return KeyCode::X;
+    case GLFW_KEY_Y:
+      return KeyCode::Y;
+    case GLFW_KEY_Z:
+      return KeyCode::Z;
+    case GLFW_KEY_LEFT_BRACKET:
+      return KeyCode::LeftBracket;
+    case GLFW_KEY_BACKSLASH:
+      return KeyCode::Backslash;
+    case GLFW_KEY_RIGHT_BRACKET:
+      return KeyCode::RightBracket;
+    case GLFW_KEY_GRAVE_ACCENT:
+      return KeyCode::GraveAccent;
+    case GLFW_KEY_WORLD_1:
+      return KeyCode::World1;
+    case GLFW_KEY_WORLD_2:
+      return KeyCode::World2;
+    case GLFW_KEY_ESCAPE:
+      return KeyCode::Escape;
+    case GLFW_KEY_ENTER:
+      return KeyCode::Enter;
+    case GLFW_KEY_TAB:
+      return KeyCode::Tab;
+    case GLFW_KEY_BACKSPACE:
+      return KeyCode::Backspace;
+    case GLFW_KEY_INSERT:
+      return KeyCode::Insert;
+    case GLFW_KEY_DELETE:
+      return KeyCode::Delete;
+    case GLFW_KEY_RIGHT:
+      return KeyCode::Right;
+    case GLFW_KEY_LEFT:
+      return KeyCode::Left;
+    case GLFW_KEY_DOWN:
+      return KeyCode::Down;
+    case GLFW_KEY_UP:
+      return KeyCode::Up;
+    case GLFW_KEY_PAGE_UP:
+      return KeyCode::PageUp;
+    case GLFW_KEY_PAGE_DOWN:
+      return KeyCode::PageDown;
+    case GLFW_KEY_HOME:
+      return KeyCode::Home;
+    case GLFW_KEY_END:
+      return KeyCode::End;
+    case GLFW_KEY_CAPS_LOCK:
+      return KeyCode::CapsLock;
+    case GLFW_KEY_SCROLL_LOCK:
+      return KeyCode::ScrollLock;
+    case GLFW_KEY_NUM_LOCK:
+      return KeyCode::NumLock;
+    case GLFW_KEY_PRINT_SCREEN:
+      return KeyCode::PrintScreen;
+    case GLFW_KEY_PAUSE:
+      return KeyCode::Pause;
+    case GLFW_KEY_F1:
+      return KeyCode::F1;
+    case GLFW_KEY_F2:
+      return KeyCode::F2;
+    case GLFW_KEY_F3:
+      return KeyCode::F3;
+    case GLFW_KEY_F4:
+      return KeyCode::F4;
+    case GLFW_KEY_F5:
+      return KeyCode::F5;
+    case GLFW_KEY_F6:
+      return KeyCode::F6;
+    case GLFW_KEY_F7:
+      return KeyCode::F7;
+    case GLFW_KEY_F8:
+      return KeyCode::F8;
+    case GLFW_KEY_F9:
+      return KeyCode::F9;
+    case GLFW_KEY_F10:
+      return KeyCode::F10;
+    case GLFW_KEY_F11:
+      return KeyCode::F11;
+    case GLFW_KEY_F12:
+      return KeyCode::F12;
+    case GLFW_KEY_F13:
+      return KeyCode::F13;
+    case GLFW_KEY_F14:
+      return KeyCode::F14;
+    case GLFW_KEY_F15:
+      return KeyCode::F15;
+    case GLFW_KEY_F16:
+      return KeyCode::F16;
+    case GLFW_KEY_F17:
+      return KeyCode::F17;
+    case GLFW_KEY_F18:
+      return KeyCode::F18;
+    case GLFW_KEY_F19:
+      return KeyCode::F19;
+    case GLFW_KEY_F20:
+      return KeyCode::F20;
+    case GLFW_KEY_F21:
+      return KeyCode::F21;
+    case GLFW_KEY_F22:
+      return KeyCode::F22;
+    case GLFW_KEY_F23:
+      return KeyCode::F23;
+    case GLFW_KEY_F24:
+      return KeyCode::F24;
+    case GLFW_KEY_F25:
+      return KeyCode::F25;
+    case GLFW_KEY_KP_0:
+      return KeyCode::Kp0;
+    case GLFW_KEY_KP_1:
+      return KeyCode::Kp1;
+    case GLFW_KEY_KP_2:
+      return KeyCode::Kp2;
+    case GLFW_KEY_KP_3:
+      return KeyCode::Kp3;
+    case GLFW_KEY_KP_4:
+      return KeyCode::Kp4;
+    case GLFW_KEY_KP_5:
+      return KeyCode::Kp5;
+    case GLFW_KEY_KP_6:
+      return KeyCode::Kp6;
+    case GLFW_KEY_KP_7:
+      return KeyCode::Kp7;
+    case GLFW_KEY_KP_8:
+      return KeyCode::Kp8;
+    case GLFW_KEY_KP_9:
+      return KeyCode::Kp9;
+    case GLFW_KEY_KP_DECIMAL:
+      return KeyCode::KpDecimal;
+    case GLFW_KEY_KP_DIVIDE:
+      return KeyCode::KpDivide;
+    case GLFW_KEY_KP_MULTIPLY:
+      return KeyCode::KpMultiply;
+    case GLFW_KEY_KP_SUBTRACT:
+      return KeyCode::KpSubtract;
+    case GLFW_KEY_KP_ADD:
+      return KeyCode::KpAdd;
+    case GLFW_KEY_KP_ENTER:
+      return KeyCode::KpEnter;
+    case GLFW_KEY_KP_EQUAL:
+      return KeyCode::KpEqual;
+    case GLFW_KEY_LEFT_SHIFT:
+      return KeyCode::LeftShift;
+    case GLFW_KEY_LEFT_CONTROL:
+      return KeyCode::LeftControl;
+    case GLFW_KEY_LEFT_ALT:
+      return KeyCode::LeftAlt;
+    case GLFW_KEY_LEFT_SUPER:
+      return KeyCode::LeftSuper;
+    case GLFW_KEY_RIGHT_SHIFT:
+      return KeyCode::RightShift;
+    case GLFW_KEY_RIGHT_CONTROL:
+      return KeyCode::RightControl;
+    case GLFW_KEY_RIGHT_ALT:
+      return KeyCode::RightAlt;
+    case GLFW_KEY_RIGHT_SUPER:
+      return KeyCode::RightSuper;
+    case GLFW_KEY_MENU:
+      return KeyCode::Menu;
+  }
+}
+
+Modifiers Window::ToModifiers(int glfw_modifiers) {
+  Modifiers result;
+  if ((glfw_modifiers & GLFW_MOD_SHIFT) != 0) {
+    result += Modifiers::Shift();
+  }
+  if ((glfw_modifiers & GLFW_MOD_CONTROL) != 0) {
+    result += Modifiers::Control();
+  }
+  if ((glfw_modifiers & GLFW_MOD_ALT) != 0) {
+    result += Modifiers::Alt();
+  }
+  if ((glfw_modifiers & GLFW_MOD_SUPER) != 0) {
+    result += Modifiers::Super();
+  }
+  return result;
+}
+
 //------------------------------------------------------------------------------
 // GLFW callback dispatch functions.
 
@@ -155,7 +453,9 @@ void Window::MouseButtonDispatch(GLFWwindow* glfw_window,
                                  int button,
                                  int action,
                                  int mods) {
-  GetWindow(glfw_window).OnMouseButton(button, action, mods);
+  GetWindow(glfw_window)
+      .OnMouseButton(ToMouseButton(button), action == GLFW_PRESS,
+                     ToModifiers(mods));
 }
 
 void Window::CursorPosDispatch(GLFWwindow* glfw_window, double x, double y) {
@@ -177,7 +477,9 @@ void Window::KeyDispatch(GLFWwindow* glfw_window,
                          int scan_code,
                          int action,
                          int mods) {
-  GetWindow(glfw_window).OnKey(key, scan_code, action, mods);
+  GetWindow(glfw_window)
+      .OnKey(ToKeyCode(key), scan_code, action == GLFW_PRESS,
+             ToModifiers(mods));
 }
 
 void Window::CharDispatch(GLFWwindow* glfw_window, unsigned int code_point) {
@@ -187,7 +489,7 @@ void Window::CharDispatch(GLFWwindow* glfw_window, unsigned int code_point) {
 void Window::CharModsDispatch(GLFWwindow* glfw_window,
                               unsigned int code_point,
                               int mods) {
-  GetWindow(glfw_window).OnCharMods(code_point, mods);
+  GetWindow(glfw_window).OnCharMods(code_point, ToModifiers(mods));
 }
 
 void Window::DropDispatch(GLFWwindow* glfw_window,
@@ -228,9 +530,9 @@ void Window::OnFramebufferSize(int width, int height) {
   (void)height;
 }
 
-void Window::OnMouseButton(int button, int action, int mods) {
+void Window::OnMouseButton(MouseButton button, bool pressed, Modifiers mods) {
   (void)button;
-  (void)action;
+  (void)pressed;
   (void)mods;
 }
 
@@ -248,10 +550,10 @@ void Window::OnScroll(double x_offset, double y_offset) {
   (void)y_offset;
 }
 
-void Window::OnKey(int key, int scan_code, int action, int mods) {
+void Window::OnKey(KeyCode key, int scan_code, bool pressed, Modifiers mods) {
   (void)key;
   (void)scan_code;
-  (void)action;
+  (void)pressed;
   (void)mods;
 }
 
@@ -259,7 +561,7 @@ void Window::OnChar(unsigned int code_point) {
   (void)code_point;
 }
 
-void Window::OnCharMods(unsigned int code_point, int mods) {
+void Window::OnCharMods(unsigned int code_point, Modifiers mods) {
   (void)code_point;
   (void)mods;
 }
