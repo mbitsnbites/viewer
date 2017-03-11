@@ -29,10 +29,7 @@
 #ifndef VIEWER_VIEWER_H_
 #define VIEWER_VIEWER_H_
 
-#include <memory>
-
 #include "ui/application.h"
-#include "ui/ui_window.h"
 
 namespace viewer {
 
@@ -42,9 +39,6 @@ class Viewer : public ui::Application {
   /// @brief Run the application.
   /// @note This method blocks until the application terminates.
   void Run();
-
- private:
-  std::unique_ptr<ui::UiWindow> main_window_;
 };
 
 }  // namespace viewer
