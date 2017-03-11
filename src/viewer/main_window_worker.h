@@ -68,7 +68,7 @@ class MainWindowWorker {
  private:
   void Run();
 
-  void CallOnWorkerThread(const std::function<void()>&& fun);
+  void CallOnWorkerThread(std::function<void()>&& fun);
 
   void SetFramebufferSizeImpl(int width, int height);
 

@@ -96,9 +96,9 @@ void MainWindowWorker::Run() {
   std::cout << "Exiting the main worker thread." << std::endl;
 }
 
-void MainWindowWorker::CallOnWorkerThread(const std::function<void()>&& fun) {
+void MainWindowWorker::CallOnWorkerThread(std::function<void()>&& fun) {
   std::unique_lock<std::mutex> lock(mutex_);
-  call_queue_.emplace(fun);
+  call_queue_.emplace(std::move(fun));
   condition_variable_.notify_all();
 }
 
