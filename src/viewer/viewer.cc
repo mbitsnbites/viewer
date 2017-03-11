@@ -29,24 +29,21 @@
 #include "viewer/viewer.h"
 
 #include "GL/gl3w.h"
-#include "imgui/imgui.h"
 
-#include "base/error.h"
-#include "base/make_unique.h"
 #include "viewer/main_window.h"
 
 namespace viewer {
 
 void Viewer::Run() {
   // Create the main window.
-  main_window_ = base::make_unique<MainWindow>();
+  MainWindow main_window;
 
   // Main loop.
-  while (!main_window_->ShouldClose()) {
+  while (!main_window.ShouldClose()) {
     PollEvents();
 
     // Activate the main window for painting.
-    main_window_->BeginFrame();
+    main_window.BeginFrame();
 
     // Clear the screen.
     glClearColor(1.0f, 0.6f, 0.0f, 1.0f);
@@ -55,9 +52,9 @@ void Viewer::Run() {
     // TODO(m): Paint the 3D world.
 
     // Paint the UI.
-    main_window_->PaintUi();
+    main_window.PaintUi();
 
-    main_window_->SwapBuffers();
+    main_window.SwapBuffers();
   }
 }
 
